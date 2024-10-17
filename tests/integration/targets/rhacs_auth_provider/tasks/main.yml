@@ -21,8 +21,75 @@
     name: ansible auth 1
     type: auth0
     rhacs_url: "{{ rhacs_host }}/portal"
-    auth0:
-      tenant_url: https://accounts.google.com
+    auth0: {}
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing parameter)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing parameter)
+
+- name: ERROR EXPECTED Ensure the auth provider exists 3
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: google
+    google: {}
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing parameter)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing parameter)
+
+- name: ERROR EXPECTED Ensure the auth provider exists 4
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: oidc
+    oidc: {}
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing parameter)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing parameter)
+
+- name: ERROR EXPECTED Ensure the auth provider exists 5
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: saml
+    saml: {}
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing parameter)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing parameter)
+
+- name: ERROR EXPECTED Ensure the auth provider exists 6
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: userpki
+    userpki: {}
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
@@ -294,7 +361,7 @@
     that: not result['changed']
     fail_msg: The preceding task should not have changed anything
 
-# The OpenShift provider is available only when Stackrox is installed
+# The OpenShift provider is available only when StackRox is installed
 # on Red Hat OpenShift.
 # - name: Ensure the auth provider exists 4
 #   herve4m.rhacs_configuration.rhacs_auth_provider:
@@ -363,6 +430,25 @@
   ansible.builtin.assert:
     that: not result['changed']
     fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the auth provider 5 is updated
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 5
+    type: saml
+    saml:
+      mode: dynamic
+      service_provider_issuer: https://prevent1.stackrox.io
+      metadata_url: https://idp.psl.eu/idp/saml2/metadata
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
 
 - name: Ensure the auth provider exists 6
   herve4m.rhacs_configuration.rhacs_auth_provider:
@@ -800,7 +886,72 @@
     that: result['changed']
     fail_msg: The preceding task should have changed something
 
+- name: Ensure the auth provider exists 10
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 10
+    type: auth0
+    rhacs_url: "{{ rhacs_host }}/portal"
+    auth0:
+      tenant_url: https://accounts.google.com
+      client_id: MyClientID
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
 # Delete
+- name: Ensure some authentication providers are removed
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    new_name: ansible auth 10
+    type: auth0
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the authentication provider 1 is removed (no change)
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: auth0
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the authentication provider 10 is removed (no change)
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 10
+    type: auth0
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
 - name: Ensure the authentication providers are removed
   herve4m.rhacs_configuration.rhacs_auth_provider:
     name: "{{ item.name }}"
@@ -810,8 +961,6 @@
     rhacs_host: "{{ rhacs_host }}"
     rhacs_token: "{{ rhacs_token }}"
   loop:
-    - name: ansible auth 1
-      type: auth0
     - name: ansible auth 2
       type: google
     - name: ansible auth 3
@@ -825,7 +974,7 @@
     - name: ansible auth 9
       type: saml
 
-- name: Ensure the authentication provider8 is removed
+- name: Ensure the authentication provider 8 is removed
   herve4m.rhacs_configuration.rhacs_auth_provider:
     name: ansible auth 8
     type: saml
@@ -840,7 +989,7 @@
     that: result['changed']
     fail_msg: The preceding task should have changed something
 
-- name: Ensure the authentication provider8 is removed (no change)
+- name: Ensure the authentication provider 8 is removed (no change)
   herve4m.rhacs_configuration.rhacs_auth_provider:
     name: ansible auth 8
     type: saml

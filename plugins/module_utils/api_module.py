@@ -202,19 +202,9 @@ class APIModule(AnsibleModule):
         data = kwargs.get("data")
         if isinstance(data, dict):
             data = json.dumps(data)
-        follow_redirects = kwargs.get("follow_redirects")
 
         try:
-            if follow_redirects is not None:
-                response = self.session.open(
-                    method,
-                    url.geturl(),
-                    headers=headers,
-                    data=data,
-                    follow_redirects=follow_redirects,
-                )
-            else:
-                response = self.session.open(method, url.geturl(), headers=headers, data=data)
+            response = self.session.open(method, url.geturl(), headers=headers, data=data)
         except SSLValidationError as ssl_err:
             raise APIModuleError(
                 "Could not establish a secure connection to {host}: {error}.".format(

@@ -631,7 +631,7 @@ def main():
             if use_client_secret is False and mode == "query":
                 module.fail_json(
                     msg=(
-                        "when `mode=query` in the `oidc' section, "
+                        "when `mode=query' in the `oidc' section, "
                         "`use_client_secret' must be true, and `client_secret' "
                         "must be set"
                     )
@@ -807,7 +807,7 @@ def main():
         if use_client_secret is False and mode == "query":
             module.fail_json(
                 msg=(
-                    "when `mode=query` in the `oidc' section, "
+                    "when `mode=query' in the `oidc' section, "
                     "`use_client_secret' must be true, and `client_secret' "
                     "must be set"
                 )
