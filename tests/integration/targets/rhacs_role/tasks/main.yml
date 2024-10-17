@@ -1,0 +1,270 @@
+---
+- name: Ensure the role 1 exists
+  herve4m.rhacs_configuration.rhacs_role:
+    name: Role 1
+    description: My first role
+    permission_set: Analyst
+    access_scope: Deny All
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the role 1 exists (no change) 1
+  herve4m.rhacs_configuration.rhacs_role:
+    name: Role 1
+    description: My first role
+    permission_set: Analyst
+    access_scope: Deny All
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the role 1 exists (no change) 2
+  herve4m.rhacs_configuration.rhacs_role:
+    name: Role 1
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the role 1 is updated 1
+  herve4m.rhacs_configuration.rhacs_role:
+    name: Role 1
+    description: My first role 2
+    permission_set: Sensor Creator
+    access_scope: Unrestricted
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the role 1 is updated 2
+  herve4m.rhacs_configuration.rhacs_role:
+    name: Role 1
+    permission_set: Admin
+    access_scope: Unrestricted
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+
+- name: ERROR EXPECTED Ensure the role Admin is removed
+  herve4m.rhacs_configuration.rhacs_role:
+    name: Admin
+    description: My Admin role
+    permission_set: Analyst
+    access_scope: Deny All
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (removing default role)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (default role)
+
+- name: ERROR EXPECTED Ensure the role Admin is updated
+  herve4m.rhacs_configuration.rhacs_role:
+    name: Admin
+    description: My Admin role
+    permission_set: Analyst
+    access_scope: Deny All
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (updating default role)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (updating default role)
+
+- name: ERROR EXPECTED Ensure the role 2 exists 1
+  herve4m.rhacs_configuration.rhacs_role:
+    name: role 2
+    description: My second role
+    permission_set: does not exist
+    access_scope: Deny All
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (unknown permission set name/id)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (unknown set)
+
+- name: ERROR EXPECTED Ensure the role 2 exists 2
+  herve4m.rhacs_configuration.rhacs_role:
+    name: role 2
+    description: My second role
+    permission_set: Analyst
+    access_scope: does not exist
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (unknown access scope name/id)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (unknown access scope)
+
+- name: Ensure the permission set exists 1
+  herve4m.rhacs_configuration.rhacs_permission_set:
+    name: ansible set 1
+    description: My first permission set with full read access
+    resource_accesses:
+      Access: READ_ACCESS
+      Administration: READ_ACCESS
+      Alert: READ_ACCESS
+      CVE: READ_ACCESS
+      Cluster: READ_ACCESS
+      Compliance: READ_ACCESS
+      Deployment: READ_ACCESS
+      DeploymentExtension: READ_ACCESS
+      Detection: READ_ACCESS
+      Image: READ_ACCESS
+      Integration: READ_ACCESS
+      K8sRole: READ_ACCESS
+      K8sRoleBinding: READ_ACCESS
+      K8sSubject: READ_ACCESS
+      Namespace: READ_ACCESS
+      NetworkGraph: READ_ACCESS
+      NetworkPolicy: READ_ACCESS
+      Node: READ_ACCESS
+      Secret: READ_ACCESS
+      ServiceAccount: READ_ACCESS
+      VulnerabilityManagementApprovals: READ_ACCESS
+      VulnerabilityManagementRequests: READ_ACCESS
+      WatchedImage: READ_ACCESS
+      WorkflowAdministration: READ_ACCESS
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the role 2 exists
+  herve4m.rhacs_configuration.rhacs_role:
+    name: role 2
+    description: My first role
+    permission_set: "{{ result['id'] }}"
+    access_scope: Deny All
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the role 1 is removed
+  herve4m.rhacs_configuration.rhacs_role:
+    name: Role 1
+    description: My first role
+    permission_set: Analyst
+    access_scope: Deny All
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the role 1 is removed (no change)
+  herve4m.rhacs_configuration.rhacs_role:
+    name: Role 1
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the role 2 is removed
+  herve4m.rhacs_configuration.rhacs_role:
+    name: role 2
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the permission set is removed
+  herve4m.rhacs_configuration.rhacs_permission_set:
+    name: ansible set 1
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+...

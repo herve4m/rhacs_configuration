@@ -1,0 +1,1542 @@
+---
+- name: Ensure the docker image integration exists
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 1
+    type: docker
+    run_test: false
+    docker:
+      endpoint: docker.example.com
+      username: rhacsint
+      password: vs9mrD55NP
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the docker image integration exists (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 1
+    type: docker
+    run_test: false
+    docker:
+      endpoint: docker.example.com
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the stackrox/clairify image integration exists (SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible stackrox conf SCANNER 1
+    type: stackrox
+    run_test: false
+    stackrox:
+      category: SCANNER
+      endpoint: scanner.stackrox.svc:8080
+      grpc_endpoint: scanner.stackrox.svc:8080/grpc
+      concurrent_scans: 4
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the stackrox/clairify image integration exists (no change) 1
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible stackrox conf SCANNER 1
+    type: stackrox
+    stackrox:
+      category: SCANNER
+      endpoint: scanner.stackrox.svc:8080
+      grpc_endpoint: scanner.stackrox.svc:8080/grpc
+      concurrent_scans: 4
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the stackrox/clairify image integration exists (NODE_SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible stackrox conf NODE_SCANNER 1
+    type: clairify
+    run_test: false
+    clairify:
+      category: NODE_SCANNER
+      endpoint: scanner.stackrox.svc:8080
+      grpc_endpoint: scanner.stackrox.svc:8080/grpc
+      concurrent_scans: 4
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the stackrox/clairify image integration exists (no change) 2
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible stackrox conf NODE_SCANNER 1
+    type: clairify
+    run_test: false
+    clairify:
+      category: NODE_SCANNER
+      endpoint: scanner.stackrox.svc:8080
+      grpc_endpoint: scanner.stackrox.svc:8080/grpc
+      concurrent_scans: 4
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the stackrox/clairify image integration exists (BOTH)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible stackrox conf BOTH 1
+    type: stackrox
+    run_test: false
+    stackrox:
+      category: BOTH
+      endpoint: scanner.stackrox.svc:8080
+      grpc_endpoint: scanner.stackrox.svc:8080/grpc
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the stackrox/clairify image integration exists (no change) 3
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible stackrox conf BOTH 1
+    type: stackrox
+    run_test: false
+    stackrox:
+      category: BOTH
+      endpoint: scanner.stackrox.svc:8080
+      grpc_endpoint: scanner.stackrox.svc:8080/grpc
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the quay image integration exists (REGISTRY)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible quay conf REGISTRY 1
+    type: quay
+    run_test: false
+    quay:
+      category: REGISTRY
+      quay_host: quay.example.com
+      username: rhacsint
+      password: vs9mrD55NP
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the quay image integration exists (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible quay conf REGISTRY 1
+    type: quay
+    run_test: false
+    quay:
+      category: REGISTRY
+      quay_host: quay.example.com
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the quay image integration exists (SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible quay conf SCANNER 1
+    type: quay
+    run_test: false
+    quay:
+      category: SCANNER
+      quay_host: quay.example.com
+      oauth_token: AABBCCDDEEFFGGHHIIJJ
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the quay image integration exists (no change) 1
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible quay conf SCANNER 1
+    type: quay
+    run_test: false
+    quay:
+      category: SCANNER
+      quay_host: quay.example.com
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the quay image integration exists (REGISTRY & SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible quay conf REGISTRY and SCANNER 1
+    type: quay
+    run_test: false
+    quay:
+      category: BOTH
+      quay_host: quay.example.com
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the quay image integration exists (no change) 2
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible quay conf REGISTRY and SCANNER 1
+    type: quay
+    run_test: false
+    quay:
+      category: BOTH
+      quay_host: quay.example.com
+      validate_certs: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the ecr image integration exists (IAM)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible ecr conf 1
+    type: ecr
+    run_test: false
+    ecr:
+      aws_id: "012345678901"
+      use_iam: true
+      region: us-east-1
+      endpoint_url: ecr.us-east-1.amazonaws.com
+      use_assume_role: false
+      assume_role_id: myrole
+      assume_role_external_id: myroleexternal
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the ecr image integration exists (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible ecr conf 1
+    type: ecr
+    run_test: false
+    ecr:
+      aws_id: "012345678901"
+      use_iam: true
+      region: us-east-1
+      endpoint_url: ecr.us-east-1.amazonaws.com
+      use_assume_role: false
+      assume_role_id: myrole
+      assume_role_external_id: myroleexternal
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the ecr image integration exists (KEYS)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible ecr conf 2
+    type: ecr
+    run_test: false
+    ecr:
+      aws_id: "012345678901"
+      use_iam: false
+      access_key: AKIAIOSFODNN7EXAMPLE
+      secret_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      region: us-east-1
+      use_assume_role: true
+      assume_role_id: myrole
+      assume_role_external_id: myroleexternal
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the ecr image integration exists (no change) 1
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible ecr conf 2
+    type: ecr
+    run_test: false
+    ecr:
+      aws_id: "012345678901"
+      use_iam: false
+      region: us-east-1
+      use_assume_role: true
+      assume_role_id: myrole
+      assume_role_external_id: myroleexternal
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the google image integration exists (REGISTRY)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible google conf REGISTRY 1
+    type: google
+    run_test: false
+    google:
+      use_workload_id: true
+      project: myproject
+      endpoint: google.example.com
+      category: REGISTRY
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the google image integration exists (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible google conf REGISTRY 1
+    type: google
+    run_test: false
+    google:
+      use_workload_id: true
+      project: myproject
+      endpoint: google.example.com
+      category: REGISTRY
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the google image integration exists (SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible google conf SCANNER 1
+    type: google
+    run_test: false
+    google:
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+      project: myproject
+      endpoint: google.example.com
+      category: SCANNER
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the google image integration exists (no change) 1
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible google conf SCANNER 1
+    type: google
+    run_test: false
+    google:
+      use_workload_id: false
+      project: myproject
+      endpoint: google.example.com
+      category: SCANNER
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the google image integration exists (REGISTRY & SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible google conf REGISTRY and SCANNER 1
+    type: google
+    run_test: false
+    google:
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+      project: myproject
+      endpoint: google.example.com
+      category: BOTH
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the google image integration exists (no change) 2
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible google conf REGISTRY and SCANNER 1
+    type: google
+    run_test: false
+    google:
+      use_workload_id: false
+      project: myproject
+      endpoint: google.example.com
+      category: BOTH
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the artifactregistry image integration exists
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible artifactregistry conf 1
+    type: artifactregistry
+    run_test: false
+    artifactregistry:
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+      project: myproject
+      endpoint: artifactregistry.example.com
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the artifactregistry image integration exists (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible artifactregistry conf 1
+    type: artifactregistry
+    run_test: false
+    artifactregistry:
+      use_workload_id: false
+      project: myproject
+      endpoint: artifactregistry.example.com
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the clair image integration exists
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible clair conf 1
+    type: clair
+    run_test: false
+    clair:
+      endpoint: clair.example.com
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the clair image integration exists (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible clair conf 1
+    type: clair
+    run_test: false
+    clair:
+      endpoint: clair.example.com
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the ibm image integration exists
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible ibm conf 1
+    type: ibm
+    run_test: false
+    ibm:
+      endpoint: clair.example.com
+      api_key: AABBCCDDEEFFGGHHIIJJ
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the ibm image integration exists (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible ibm conf 1
+    type: ibm
+    run_test: false
+    ibm:
+      endpoint: clair.example.com
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the rhel image integration exists
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible rhel conf 1
+    type: rhel
+    run_test: false
+    rhel:
+      endpoint: rhel.example.com
+      username: rhacsint
+      password: vs9mrD55NP
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the rhel image integration exists (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible rhel conf 1
+    type: rhel
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the azure image integration exists
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible azure conf 1
+    type: azure
+    run_test: false
+    azure:
+      endpoint: azure.example.com
+      username: rhacsint
+      password: vs9mrD55NP
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the azure image integration exists (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible azure conf 1
+    type: azure
+    run_test: false
+    rhel:
+      endpoint: azure.example.com
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the artifactory image integration exists
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible artifactory conf 1
+    type: artifactory
+    run_test: false
+    artifactory:
+      endpoint: artifactory.example.com
+      username: rhacsint
+      password: vs9mrD55NP
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the artifactory image integration exists (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible artifactory conf 1
+    type: artifactory
+    run_test: false
+    rhel:
+      endpoint: artifactory.example.com
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the nexus image integration exists
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible nexus conf 1
+    type: nexus
+    run_test: false
+    nexus:
+      endpoint: nexus.example.com
+      username: rhacsint
+      password: vs9mrD55NP
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the nexus image integration exists (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible nexus conf 1
+    type: nexus
+    run_test: false
+    azure:
+      endpoint: nexus.example.com
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# Updates
+
+- name: Ensure the docker image integration is updated
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 1
+    type: docker
+    run_test: false
+    docker:
+      endpoint: docker2.example.com
+      username: rhacsint2
+      password: My53cr3Tpa55
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the stackrox/clairify integration is updated (SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible stackrox conf SCANNER 1
+    type: clairify
+    run_test: false
+    clairify:
+      category: NODE_SCANNER
+      endpoint: scanner3.stackrox.svc:8080
+      grpc_endpoint: scanner3.stackrox.svc:8080/grpc
+      concurrent_scans: 5
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the stackrox/clairify integration is updated (NODE_SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible stackrox conf NODE_SCANNER 1
+    type: clairify
+    run_test: false
+    stackrox:
+      category: BOTH
+      grpc_endpoint: scanner4.stackrox.svc:8080/grpc
+      concurrent_scans: 6
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the stackrox/clairify image integration is updated (BOTH)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible stackrox conf BOTH 1
+    type: stackrox
+    run_test: false
+    stackrox:
+      category: SCANNER
+      endpoint: scanner5.stackrox.svc:8080
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the quay image integration is updated (REGISTRY)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible quay conf REGISTRY 1
+    type: quay
+    run_test: false
+    quay:
+      category: SCANNER
+      quay_host: quay2.example.com
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the quay image integration is updated (SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible quay conf SCANNER 1
+    type: quay
+    run_test: false
+    quay:
+      category: REGISTRY
+      oauth_token: AABBCCDDEEFFGGHHIIJJ
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the quay image integration is updated (REGISTRY & SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible quay conf REGISTRY and SCANNER 1
+    type: quay
+    run_test: false
+    quay:
+      category: BOTH
+      quay_host: quay.example.com
+      oauth_token: AABBCCDDEEFFGGHHIIJJ
+      username: rhacsint3
+      password: My53cr3Tpa55
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the ecr image integration is updated (IAM)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible ecr conf 1
+    type: ecr
+    run_test: false
+    ecr:
+      aws_id: AWSID2
+      use_iam: true
+      region: us-east-2
+      endpoint_url: ""
+      use_assume_role: true
+      assume_role_id: myrole2
+      assume_role_external_id: myroleexternal2
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the ecr image integration is updated (KEYS)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible ecr conf 2
+    type: ecr
+    run_test: false
+    ecr:
+      aws_id: AWSID
+      use_iam: false
+      access_key: AKIAIOSFODNN7EXAMPLE
+      secret_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      region: us-east-1
+      use_assume_role: true
+      assume_role_id: myrole
+      assume_role_external_id: myroleexternal
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the google image integration is updated (REGISTRY)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible google conf REGISTRY 1
+    type: google
+    run_test: false
+    google:
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+      project: myproject2
+      endpoint: google2.example.com
+      category: SCANNER
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the google image integration is updated (REGISTRY) 2
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible google conf REGISTRY 1
+    type: google
+    run_test: false
+    google:
+      endpoint: google3.example.com
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the google image integration is updated (SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible google conf SCANNER 1
+    type: google
+    run_test: false
+    google:
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+      project: myproject
+      endpoint: google.example.com
+      category: SCANNER
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the google image integration is updated (REGISTRY & SCANNER)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible google conf REGISTRY and SCANNER 1
+    type: google
+    run_test: false
+    google:
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+      project: myproject3
+      endpoint: google3.example.com
+      category: SCANNER
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the artifactregistry image integration is updated
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible artifactregistry conf 1
+    type: artifactregistry
+    run_test: false
+    artifactregistry:
+      project: myproject4
+      endpoint: artifactregistry4.example.com
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the clair image integration is updated
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible clair conf 1
+    type: clair
+    run_test: false
+    clair:
+      endpoint: clair2.example.com
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the ibm image integration is updated
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible ibm conf 1
+    type: ibm
+    run_test: false
+    ibm:
+      endpoint: clair.example.com
+      api_key: AABBCCDDEEFFGGHHIIJJKK
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the ibm image integration is updated 2
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible ibm conf 1
+    type: ibm
+    run_test: false
+    ibm:
+      endpoint: clair2.example.com
+      api_key: AABBCCDDEEFFGGHHIIJJKK
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the rhel image integration is updated
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible rhel conf 1
+    type: rhel
+    run_test: false
+    rhel:
+      endpoint: rhel2.example.com
+      username: rhacsint2
+      password: My53cr3Tpa55
+      validate_certs: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the azure image integration is updated
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible azure conf 1
+    type: azure
+    run_test: false
+    azure:
+      endpoint: azure.example.com
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the artifactory image integration is updated
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible artifactory conf 1
+    type: artifactory
+    run_test: false
+    artifactory:
+      username: rhacsint
+      password: vs9mrD55NP
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the nexus image integration is updated
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible nexus conf 1
+    type: nexus
+    run_test: false
+    nexus:
+      endpoint: nexus2.example.com
+      username: rhacsint2
+      password: vs9mrD55NP2
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+# Rename
+- name: Ensure the docker image integration exists 10
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: does not matter
+    new_name: ansible docker conf 10
+    type: docker
+    run_test: false
+    docker:
+      endpoint: docker.example.com
+      username: rhacsint
+      password: vs9mrD55NP
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the docker image integration exists 10 (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: does not matter
+    new_name: ansible docker conf 10
+    type: docker
+    run_test: false
+    docker:
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the docker image integration exists 10 (no change) (2)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 10
+    new_name: ansible docker conf 10
+    type: docker
+    run_test: false
+    docker:
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the quay image integration exists 10
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible quay conf 10
+    type: quay
+    run_test: false
+    quay:
+      category: REGISTRY
+      quay_host: quay.example.com
+      username: rhacsint
+      password: vs9mrD55NP
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: ERROR EXPECTED Ensure the docker integration is renamed
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 10
+    new_name: ansible quay conf 10
+    type: docker
+    run_test: false
+    docker:
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (type discrepancy)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (type discrepancy)
+
+- name: Ensure the quay image integration is renamed
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible quay conf 10
+    new_name: ansible quay conf 100
+    type: quay
+    run_test: false
+    quay:
+      category: REGISTRY
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the docker image integration exists 11
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 11
+    type: docker
+    run_test: false
+    docker:
+      endpoint: docker.example.com
+      username: rhacsint
+      password: vs9mrD55NP
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the docker image integration is renamed (11-->110)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 11
+    new_name: ansible docker conf 110
+    type: docker
+    run_test: false
+    docker:
+      endpoint: docker.example.com
+      validate_certs: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the docker image integration is updated (no change)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 110
+    type: docker
+    run_test: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the docker image integration is renamed (110-->210)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 110
+    new_name: ansible docker conf 210
+    type: docker
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the docker image integration is renamed (210-->10)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 210
+    new_name: ansible docker conf 10
+    type: docker
+    run_test: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the docker integration does not exist (no change) (210)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 210
+    type: docker
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# Remove
+- name: Ensure the image integrations are removed
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: "{{ item.name }}"
+    type: "{{ item.type }}"
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  loop:
+    - name: ansible stackrox conf NODE_SCANNER 1
+      type: stackrox
+    - name: ansible stackrox conf BOTH 1
+      type: clairify
+    - name: ansible docker conf 1
+      type: docker
+    - name: ansible quay conf REGISTRY 1
+      type: quay
+    - name: ansible quay conf SCANNER 1
+      type: quay
+    - name: ansible quay conf REGISTRY and SCANNER 1
+      type: quay
+    - name: ansible ecr conf 1
+      type: ecr
+    - name: ansible ecr conf 2
+      type: ecr
+    - name: ansible google conf REGISTRY 1
+      type: google
+    - name: ansible google conf SCANNER 1
+      type: google
+    - name: ansible google conf REGISTRY and SCANNER 1
+      type: google
+    - name: ansible artifactregistry conf 1
+      type: artifactregistry
+    - name: ansible clair conf 1
+      type: clair
+    - name: ansible ibm conf 1
+      type: ibm
+    - name: ansible rhel conf 1
+      type: rhel
+    - name: ansible azure conf 1
+      type: azure
+    - name: ansible artifactory conf 1
+      type: artifactory
+    - name: ansible nexus conf 1
+      type: nexus
+    - name: ansible docker conf 10
+      type: docker
+    - name: ansible quay conf 100
+      type: quay
+
+- name: Ensure the stackrox/clairify image integration is removed
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible stackrox conf SCANNER 1
+    type: stackrox
+    run_test: false
+    stackrox:
+      endpoint: stackrox.example.com
+      grpc_endpoint: stackrox.example.com/grpc
+      concurrent_scans: 4
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the stackrox/clairify image integration is removed (no chg)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible stackrox conf SCANNER 1
+    type: stackrox
+    run_test: false
+    stackrox:
+      endpoint: stackrox.example.com
+      grpc_endpoint: stackrox.example.com/grpc
+      concurrent_scans: 4
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+...

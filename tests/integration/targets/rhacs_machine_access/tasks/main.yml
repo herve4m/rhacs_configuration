@@ -1,0 +1,240 @@
+---
+- name: Ensure the GitHub machine access conf exists
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GITHUB_ACTIONS
+    expiration: 4h
+    rules:
+      - key: sub
+        value: "repo:test/test-repo.*"
+        role: Continuous Integration
+    append: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+
+- name: Ensure the GitHub machine access conf exists (no change)
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GITHUB_ACTIONS
+    expiration: 4h
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the GitHub machine access conf is updated
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GITHUB_ACTIONS
+    expiration: 4h
+    rules:
+      - key: sub
+        value: "repo:foo/foo-repo.*"
+    append: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the GitHub machine access conf is updated (no change)
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GITHUB_ACTIONS
+    expiration: 4h
+    rules:
+      - key: sub
+        value: "repo:foo/foo-repo.*"
+        role: Admin
+    append: true
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the GitHub machine access conf is updated (2)
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GITHUB_ACTIONS
+    expiration: 4h5m
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: ERROR EXPECTED Ensure the GitHub machine access conf is updated
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GITHUB_ACTIONS
+    expiration: 4h5m
+    append: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing rules)
+
+- name: Ensure the GitHub machine access conf is updated (3)
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GITHUB_ACTIONS
+    expiration: 10h50m
+    rules:
+      - key: sub
+        value: "repo:test/test-repo.*"
+        role: Continuous Integration
+      - key: sub
+        value: "repo:bar/bar-repo.*"
+        role: Admin
+    append: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the generic (Google) machine access config exists
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GENERIC
+    issuer: https://accounts.google.com
+    rules:
+      - key: sub
+        value: "repo:octo-org/octo-repo.*"
+        role: Continuous Integration
+    append: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+
+- name: ERROR EXPECTED Ensure the generic machine access config is updated
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GENERIC
+    issuer: https://accounts.google.com
+    expiration: 40h12m
+    rules:
+      - key: sub
+        value: "repo:octo-org/octo-repo.*"
+        role: Continuous Integration
+    append: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong expiration)
+
+- name: ERROR EXPECTED Ensure the generic machine access config exists
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GENERIC
+    issuer: https://foobar123456.example.com/
+    expiration: 4h1m
+    rules:
+      - key: sub
+        value: "repo:octo-org/octo-repo.*"
+        role: Continuous Integration
+    append: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (wrong issuer)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong issuer)
+
+- name: Ensure the GitHub machine access conf is removed
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GITHUB_ACTIONS
+    expiration: 10h50m
+    rules:
+      - key: sub
+        value: "repo:test/test-repo.*"
+        role: Continuous Integration
+      - key: sub
+        value: "repo:bar/bar-repo.*"
+        role: Admin
+    append: false
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the GitHub machine access conf is removed (2)
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GITHUB_ACTIONS
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the generic (Google) machine access config is removed
+  herve4m.rhacs_configuration.rhacs_machine_access:
+    type: GENERIC
+    issuer: https://accounts.google.com
+    expiration: 10h50m
+    rules:
+      - key: sub
+        value: "repo:octo-org/octo-repo.*"
+        role: Continuous Integration
+    append: true
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+...

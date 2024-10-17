@@ -1,0 +1,556 @@
+---
+- name: ERROR EXPECTED Ensure the conf exists (missing bucket and region)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    backups_to_retain: 42
+    interval: WEEKLY
+    week_day: Monday
+    hour: 23
+    minute: 42
+    s3:
+      object_prefix: central1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (bucket and region)
+
+- name: ERROR EXPECTED Ensure the S3 backup conf exists (missing keys)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    backups_to_retain: 42
+    interval: WEEKLY
+    hour: 23
+    minute: 42
+    s3:
+      bucket: rhacs-backups
+      object_prefix: central1
+      region: us-east-1
+      use_iam: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (keys)
+
+- name: ERROR EXPECTED Ensure the S3 backup conf exists (missing S3 conf)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    backups_to_retain: 42
+    interval: WEEKLY
+    week_day: Monday
+    hour: 23
+    minute: 42
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (S3 conf)
+
+- name: Ensure the S3 external backup conf exists
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    backups_to_retain: 42
+    interval: WEEKLY
+    week_day: Monday
+    hour: 23
+    minute: 42
+    s3:
+      bucket: rhacs-backups
+      object_prefix: central1
+      region: us-east-1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+
+- name: Ensure the S3 external backup conf exists (no change) (1)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    hour: 23
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the S3 external backup conf exists (no change) (2)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    s3:
+      use_iam: true
+      aws_region: us-east-1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the S3 external backup conf exists (no change) (3)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    backups_to_retain: 42
+    interval: WEEKLY
+    week_day: Monday
+    hour: 23
+    minute: 42
+    s3:
+      bucket: rhacs-backups
+      object_prefix: central1
+      region: us-east-1
+      use_iam: true
+      endpoint_url: ""
+      access_key: AKIAIOSFODNN7EXAMPLE
+      secret_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the S3 external backup conf exists (2)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups2
+    type: s3
+    s3:
+      bucket: rhacs-backups
+      object_prefix: central1
+      region: us-east-1
+      use_iam: false
+      access_key: AKIAIOSFODNN7EXAMPLE
+      secret_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the S3 external backup conf does not exist (2)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups2
+    type: s3
+    s3:
+      object_prefix: ""
+      region: us-east-1
+      use_iam: false
+      access_key: AKIAIOSFODNN7EXAMPLE
+      secret_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+# Updates
+- name: Ensure the S3 external backup conf is updated (1)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    backups_to_retain: 3
+    interval: DAILY
+    week_day: Tuesday
+    s3:
+      bucket: rhacs-backups
+      object_prefix: central1
+      region: us-east-1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the S3 external backup conf is updated (2)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    s3:
+      bucket: rhacs-backups2
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the S3 external backup conf is updated (3)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    s3:
+      use_iam: false
+      access_key: AKIAIOSFODNN7EXAMPLE
+      secret_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the S3 external backup conf is updated (no change)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    backups_to_retain: 3
+    interval: DAILY
+    week_day: Tuesday
+    hour: 23
+    minute: 42
+    s3:
+      bucket: rhacs-backups2
+      use_iam: false
+      object_prefix: central1
+      region: us-east-1
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# GCS
+- name: ERROR EXPECTED Ensure the GCS backup conf exists (wrong hour)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    backups_to_retain: 42
+    interval: WEEKLY
+    week_day: Monday
+    hour: 24
+    minute: 42
+    gcs:
+      bucket: rhacs-backups
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong hour)
+
+- name: ERROR EXPECTED Ensure the GCS backup conf exists (wrong minute)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    backups_to_retain: 42
+    interval: WEEKLY
+    week_day: Monday
+    minute: 65
+    gcs:
+      bucket: rhacs-backups
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong minute)
+
+- name: ERROR EXPECTED Ensure the GCS backup conf exists (wrong retention)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    backups_to_retain: 0
+    interval: WEEKLY
+    week_day: Monday
+    gcs:
+      bucket: rhacs-backups
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong retention)
+
+- name: ERROR EXPECTED Ensure the GCS backup conf exists (missing SA)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    backups_to_retain: 1
+    interval: WEEKLY
+    week_day: Monday
+    gcs:
+      bucket: rhacs-backups
+      use_workload_id: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong service account)
+
+- name: Ensure the GCS external backup conf exists
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    week_day: Monday
+    gcs:
+      bucket: rhacs-backups
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+# Update
+- name: Ensure the GCS external backup conf is updated
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    interval: WEEKLY
+    week_day: Tuesday
+    gcs:
+      bucket: rhacs-backups2
+      use_workload_id: true
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the GCS external backup conf is updated (no change)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    backups_to_retain: 1
+    interval: WEEKLY
+    week_day: Tuesday
+    hour: 18
+    minute: 0
+    gcs:
+      bucket: rhacs-backups2
+      use_workload_id: true
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+      object_prefix: ""
+    s3:
+      bucket: rhacs-backups
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the GCS external backup conf is updated (1)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    interval: WEEKLY
+    week_day: Tuesday
+    gcs:
+      bucket: rhacs-backups2
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the GCS external backup conf is updated (2)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    interval: WEEKLY
+    week_day: Tuesday
+    gcs:
+      bucket: rhacs-backups2
+      use_workload_id: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: ERROR EXPECTED Ensure the GCS backup conf is updated (missing SA)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    interval: WEEKLY
+    week_day: Tuesday
+    gcs:
+      bucket: rhacs-backups2
+      use_workload_id: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong service account)
+
+# Deletes
+- name: Ensure the GCS external backup conf does not exist
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the S3 external backup conf does not exist
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    backups_to_retain: 1
+    interval: WEEKLY
+    week_day: Monday
+    hour: 12
+    minute: 0
+    s3:
+      bucket: testb1
+      region: us-east-2
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the S3 external backup conf does not exist (no change)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+...

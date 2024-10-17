@@ -1,0 +1,27 @@
+---
+requires_ansible: ">=2.14.0"
+action_groups:
+  rhacs:
+    - rhacs_api_token
+    - rhacs_external_backup
+    - rhacs_machine_access
+    - rhacs_cloud_management_platform
+    - rhacs_signature
+    - rhacs_policy_category
+    - rhacs_image_integration
+    - rhacs_notifier_integration
+    - rhacs_permission_set
+    - rhacs_access_scope
+    - rhacs_role
+    - rhacs_auth_provider
+    - rhacs_group
+    - rhacs_config
+    - rhacs_exception
+    - rhacs_collection
+    - rhacs_init_bundle
+    - rhacs_delegated_image_scan
+    - rhacs_policy_status
+    - rhacs_policy_notifier
+    - rhacs_policy_clone
+    - rhacs_policy_export
+    - rhacs_policy_import

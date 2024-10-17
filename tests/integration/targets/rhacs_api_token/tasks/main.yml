@@ -1,0 +1,133 @@
+---
+- name: Ensure the API token exists
+  herve4m.rhacs_configuration.rhacs_api_token:
+    name: my_token
+    role: Vulnerability Management Approver
+    skip_validate_certs: true
+    expiration: "2029-12-02T21:06:00Z"
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    state: present
+  register: result
+
+- name: Ensure that the returned data has the token key
+  ansible.builtin.assert:
+    that: "'token' in result"
+    fail_msg: The result should have the token key
+
+- name: Ensure the API token exists (no change)
+  herve4m.rhacs_configuration.rhacs_api_token:
+    name: my_token
+    role: Vulnerability Management Approver
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    state: present
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure that the returned data does not have the token key
+  ansible.builtin.assert:
+    that: "'token' not in result"
+    fail_msg: The result should not have the token key
+
+- name: Ensure the API token exists (2)
+  herve4m.rhacs_configuration.rhacs_api_token:
+    name: my_token2
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    state: present
+  register: result
+
+- name: Ensure that the role is set to Admin
+  ansible.builtin.assert:
+    that: result['role'] == 'Admin'
+    fail_msg: The result should have the token key
+
+- name: Ensure the API token does not exist (2)
+  herve4m.rhacs_configuration.rhacs_api_token:
+    name: my_token2
+    role: Admin
+    skip_validate_certs: true
+    expiration: "2025-12-02T21:06:00Z"
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    state: absent
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: ERROR EXPECTED Ensure the API token exists (wrong role)
+  herve4m.rhacs_configuration.rhacs_api_token:
+    name: my_token3
+    role: Wrong Role
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    state: present
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong role)
+
+- name: ERROR EXPECTED Ensure the API token exists (wrong date)
+  herve4m.rhacs_configuration.rhacs_api_token:
+    name: my_token4
+    role: Admin
+    expiration: "1234abc"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    state: present
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong date)
+
+- name: Ensure the API token does not exist
+  herve4m.rhacs_configuration.rhacs_api_token:
+    name: my_token
+    role: Vulnerability Management Approver
+    skip_validate_certs: true
+    expiration: "2025-12-02T21:06:00Z"
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    state: absent
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+
+- name: Ensure the API token does not exist (no change)
+  herve4m.rhacs_configuration.rhacs_api_token:
+    name: my_token
+    role: Vulnerability Management Approver
+    skip_validate_certs: true
+    expiration: "2025-12-02T21:06:00Z"
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    state: absent
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+...

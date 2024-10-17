@@ -1,0 +1,857 @@
+---
+- name: ERROR EXPECTED Ensure the auth provider exists 1
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: auth0
+    rhacs_url: "{{ rhacs_host }}/portal"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing auth0 section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing auth0 section)
+
+- name: ERROR EXPECTED Ensure the auth provider exists 2
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: auth0
+    rhacs_url: "{{ rhacs_host }}/portal"
+    auth0:
+      tenant_url: https://accounts.google.com
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing parameter)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing parameter)
+
+- name: Ensure the auth provider exists 1
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: auth0
+    rhacs_url: "{{ rhacs_host }}/portal"
+    auth0:
+      tenant_url: https://accounts.google.com
+      client_id: MyClientID
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Display the ID
+  ansible.builtin.debug:
+    var: result
+
+- name: Ensure the auth provider exists 1 (no change) 1
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: auth0
+    rhacs_url: "{{ rhacs_host }}/portal"
+    auth0:
+      tenant_url: https://accounts.google.com
+      client_id: MyClientID
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Display the ID
+  ansible.builtin.debug:
+    var: result
+
+- name: Ensure the auth provider exists 1 (no change) 2
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: auth0
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the auth provider exists 1 (no change) 3
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: auth0
+    auth0:
+      tenant_url: https://accounts.google.com
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the auth provider is updated
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: auth0
+    rhacs_url: "{{ rhacs_host }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Display the ID
+  ansible.builtin.debug:
+    var: result
+
+- name: Ensure the auth provider exists 2
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 2
+    type: google
+    google:
+      audience: /projects/4242/global/backendServices/4242
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Display the ID
+  ansible.builtin.debug:
+    var: result
+
+- name: Ensure the auth provider exists 2 (no change)
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 2
+    type: google
+    google: {}
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: ERROR EXPECTED Ensure the auth provider exists 3
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 3
+    type: oidc
+    oidc:
+      mode: query
+      issuer: https://accounts.google.com
+      client_id: my client id
+      use_client_secret: false
+      offline_access_scope: false
+      attributes:
+        - key: key1
+          value: val1
+        - key: key2
+          value: val2
+      claim_mappings:
+        - key: mkey1
+          value: mval1
+        - key: mkey2
+          value: mval2
+        - key: mkey3
+          value: mval3
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (mutually exclusive)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (mutually exclusive)
+
+- name: Ensure the auth provider exists 3
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 3
+    type: oidc
+    oidc:
+      issuer: https://accounts.google.com
+      client_id: my client id
+      client_secret: my client secret
+      use_client_secret: true
+      offline_access_scope: false
+      attributes:
+        - key: key1
+          value: val1
+        - key: key2
+          value: val2
+      claim_mappings:
+        - key: mkey1
+          value: mval1
+        - key: mkey2
+          value: mval2
+        - key: mkey3
+          value: mval3
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider exists 3 (no change) 1
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 3
+    type: oidc
+    oidc:
+      mode: post
+      issuer: https://accounts.google.com
+      client_id: my client id
+      offline_access_scope: false
+      attributes:
+        - key: key1
+          value: val1
+        - key: key2
+          value: val2
+      claim_mappings:
+        - key: mkey1
+          value: mval1
+        - key: mkey2
+          value: mval2
+        - key: mkey3
+          value: mval3
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the auth provider exists 3 (no change) 2
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 3
+    type: oidc
+    oidc:
+      issuer: https://accounts.google.com
+      client_id: my client id
+      offline_access_scope: false
+      claim_mappings:
+        - key: mkey1
+          value: mval1
+        - key: mkey2
+          value: mval2
+        - key: mkey3
+          value: mval3
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# The OpenShift provider is available only when Stackrox is installed
+# on Red Hat OpenShift.
+# - name: Ensure the auth provider exists 4
+#   herve4m.rhacs_configuration.rhacs_auth_provider:
+#     name: ansible auth 4
+#     type: openshift
+#     state: present
+#     skip_validate_certs: true
+#     rhacs_host: "{{ rhacs_host }}"
+#     rhacs_token: "{{ rhacs_token }}"
+#   register: result
+
+# - name: Ensure that the task did change something
+#   ansible.builtin.assert:
+#     that: result['changed']
+#     fail_msg: The preceding task should have changed something
+
+# - name: Ensure the auth provider exists 4 (no change)
+#   herve4m.rhacs_configuration.rhacs_auth_provider:
+#     name: ansible auth 4
+#     type: openshift
+#     state: present
+#     skip_validate_certs: true
+#     rhacs_host: "{{ rhacs_host }}"
+#     rhacs_token: "{{ rhacs_token }}"
+#   register: result
+
+# - name: Ensure that the task did not change anything
+#   ansible.builtin.assert:
+#     that: not result['changed']
+#     fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the auth provider exists 5
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 5
+    type: saml
+    saml:
+      mode: dynamic
+      service_provider_issuer: https://prevent.stackrox.io
+      metadata_url: https://idp.psl.eu/idp/saml2/metadata
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider exists 5 (no change)
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 5
+    type: saml
+    saml:
+      mode: dynamic
+      service_provider_issuer: https://prevent.stackrox.io
+      metadata_url: https://idp.psl.eu/idp/saml2/metadata
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the auth provider exists 6
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: does not exist
+    new_name: ansible auth 6
+    type: saml
+    saml:
+      mode: static
+      service_provider_issuer: https://prevent.stackrox.io
+      idp_issuer: https://idp.psl.eu/idp/saml2/sso
+      idp_sso_url: https://idp.psl.eu/idp/saml2/sso
+      idp_nameid_format: >
+        urn:oasis:names:tc:SAML:1.1:nameid-format:persistent
+      idp_certificate: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider exists 6 (no change) 1
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 6
+    type: saml
+    saml:
+      mode: static
+      service_provider_issuer: https://prevent.stackrox.io
+      idp_issuer: https://idp.psl.eu/idp/saml2/sso
+      idp_sso_url: https://idp.psl.eu/idp/saml2/sso
+      idp_nameid_format: >
+        urn:oasis:names:tc:SAML:1.1:nameid-format:persistent
+      idp_certificate: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the auth provider exists 6 (no change) 2
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 6
+    type: saml
+    saml:
+      service_provider_issuer: https://prevent.stackrox.io
+      idp_issuer: https://idp.psl.eu/idp/saml2/sso
+      idp_sso_url: https://idp.psl.eu/idp/saml2/sso
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the auth provider exists 7
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 7
+    new_name: ansible auth 7
+    type: userpki
+    userpki:
+      ca_certificate: "{{ lookup('ansible.builtin.file',
+        'sign_cert.pem') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider exists 7 (no change)
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 7
+    type: userpki
+    userpki:
+      ca_certificate: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# Rename
+- name: Ensure the auth provider exists 9
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 9
+    type: saml
+    saml:
+      mode: dynamic
+      service_provider_issuer: https://www.google.com
+      metadata_url: https://idp.psl.eu/idp/saml2/metadata
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider 5 is renamed to 9, which exists
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 5
+    new_name: ansible auth 9
+    type: saml
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider 5 does not exist anymore
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 5
+    type: saml
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the auth provider 7 is renamed (no change) 1
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 7
+    new_name: ansible auth 7
+    type: userpki
+    userpki: {}
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the auth provider 7 is renamed (no change) 2
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: does not exist
+    new_name: ansible auth 7
+    type: userpki
+    userpki: {}
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: ERROR EXPECTED Ensure the auth provider 6 is renamed 1
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 6
+    new_name: ansible auth 7
+    type: openshift
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (source type != destination type)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (different types)
+
+- name: ERROR EXPECTED Ensure the auth provider 6 is renamed 2
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 6
+    new_name: ansible auth 8
+    type: openshift
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (type change)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (type change)
+
+- name: Ensure the auth provider 6 is renamed/changed
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 6
+    new_name: ansible auth 8
+    type: saml
+    saml:
+      mode: static
+      service_provider_issuer: https://accounts.google.com
+      idp_issuer: https://idp.psl.eu/idp/saml2/sso
+      idp_sso_url: https://idp.psl.eu/idp/saml2/sso
+      idp_nameid_format: >
+        urn:oasis:names:tc:SAML:1.1:nameid-format:persistent
+      idp_certificate: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider 6 is removed (no change)
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 6
+    new_name: ansible auth 8
+    type: saml
+    saml:
+      mode: static
+      service_provider_issuer: https://accounts.google.com
+      idp_issuer: https://idp.psl.eu/idp/saml2/sso
+      idp_sso_url: https://idp.psl.eu/idp/saml2/sso
+      idp_nameid_format: >
+        urn:oasis:names:tc:SAML:1.1:nameid-format:persistent
+      idp_certificate: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# Updates
+- name: Ensure the auth provider 1 is updated
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 1
+    type: auth0
+    rhacs_url: "{{ rhacs_host }}"
+    auth0:
+      tenant_url: https://accounts.google.com
+      client_id: MyNewClientId
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider 2 is updated
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 2
+    type: google
+    google:
+      audience: /projects/4343/global/backendServices/4343
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider 3 is updated 1
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 3
+    type: oidc
+    oidc:
+      issuer: https://accounts.google.com
+      client_id: my client id
+      client_secret: my client secret
+      use_client_secret: true
+      offline_access_scope: false
+      attributes:
+        - key: key1
+          value: val1
+        - key: key2
+          value: val2
+      claim_mappings:
+        - key: mkey1
+          value: mval1
+        - key: mkey2
+          value: mval2
+        - key: mkey3
+          value: mval3
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider 3 is updated 2
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 3
+    type: oidc
+    oidc:
+      mode: fragment
+      issuer: https://accounts.google.com
+      client_id: my new client id 1
+      client_secret: my client secret 1
+      use_client_secret: true
+      offline_access_scope: true
+      attributes:
+        - key: key1
+          value: val1
+        - key: key3
+          value: val3
+      claim_mappings: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider 3 is updated 3
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 3
+    type: oidc
+    oidc:
+      mode: query
+      issuer: https://accounts.google.com
+      client_id: my new client id 2
+      client_secret: my client secret 2
+      use_client_secret: true
+      offline_access_scope: true
+      attributes: []
+      claim_mappings:
+        - key: key1
+          value: val1
+        - key: key3
+          value: val3
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider 9 is updated
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 9
+    type: saml
+    saml:
+      mode: static
+      service_provider_issuer: https://prevent.stackrox.io
+      idp_issuer: https://idp.psl.eu/idp/saml2/sso
+      idp_sso_url: https://idp.psl.eu/idp/saml2/sso
+      idp_nameid_format: >
+        urn:oasis:names:tc:SAML:1.1:nameid-format:persistent
+      idp_certificate: "{{ lookup('ansible.builtin.file',
+        'sign_cert.pem') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the auth provider 7 is updated
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 7
+    type: userpki
+    userpki:
+      ca_certificate: "{{ lookup('ansible.builtin.file', 'ca.pem') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+# Delete
+- name: Ensure the authentication providers are removed
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: "{{ item.name }}"
+    type: "{{ item.type }}"
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  loop:
+    - name: ansible auth 1
+      type: auth0
+    - name: ansible auth 2
+      type: google
+    - name: ansible auth 3
+      type: oidc
+    - name: ansible auth 4
+      type: openshift
+    - name: ansible auth 5
+      type: saml
+    - name: ansible auth 7
+      type: userpki
+    - name: ansible auth 9
+      type: saml
+
+- name: Ensure the authentication provider8 is removed
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 8
+    type: saml
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the authentication provider8 is removed (no change)
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible auth 8
+    type: saml
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+...

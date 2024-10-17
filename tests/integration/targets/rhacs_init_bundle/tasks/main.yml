@@ -1,0 +1,110 @@
+---
+- name: ERROR EXPECTED Ensure the cluster init bundle exists
+  herve4m.rhacs_configuration.rhacs_init_bundle:
+    name: Ansible bundle 1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (wrong name format)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong name format)
+
+- name: ERROR EXPECTED Ensure the cluster init bundle exists 2
+  herve4m.rhacs_configuration.rhacs_init_bundle:
+    name: Ansiblerésultat
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (wrong name format)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong name format)
+
+- name: Ensure the cluster init bundle exists
+  herve4m.rhacs_configuration.rhacs_init_bundle:
+    name: Ansible.bundle-1.0_12_3-3
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure that bundle is returned
+  ansible.builtin.assert:
+    that: "'b64_kubectl' in result and 'b64_helm' in result"
+    fail_msg: The bundle should have been returned
+
+- name: Save the Kubernetes secrets to create secrets for new secured clusters
+  ansible.builtin.copy:
+    content: "{{ result['b64_kubectl'] |
+      ansible.builtin.b64decode }}"
+    dest: /tmp/development.yaml
+    mode: '0600'
+
+- name: Ensure that the secret resources are present
+  ansible.builtin.assert:
+    that: "'kind: Secret' in result['b64_kubectl'] |
+      ansible.builtin.b64decode"
+    fail_msg: The preceding task should have found a secret
+
+- name: Ensure the cluster init bundle exists (no change)
+  herve4m.rhacs_configuration.rhacs_init_bundle:
+    name: Ansible.bundle-1.0_12_3-3
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure that bundle is not returned
+  ansible.builtin.assert:
+    that: "'b64_kubectl' not in result and 'b64_helm' not in result"
+    fail_msg: The bundle should not have been returned
+
+- name: Ensure the cluster init bundle is removed
+  herve4m.rhacs_configuration.rhacs_init_bundle:
+    name: Ansible.bundle-1.0_12_3-3
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the cluster init bundle is removed (no change)
+  herve4m.rhacs_configuration.rhacs_init_bundle:
+    name: Ansible.bundle-1.0_12_3-3
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+...

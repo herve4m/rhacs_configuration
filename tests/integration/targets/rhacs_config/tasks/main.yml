@@ -1,0 +1,190 @@
+---
+- name: Ensure the configuration is read (no change)
+  herve4m.rhacs_configuration.rhacs_config:
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated
+  herve4m.rhacs_configuration.rhacs_config:
+    login:
+      enabled: true
+      text: My login text
+    header:
+      enabled: true
+      text: My header text
+      size: MEDIUM
+      color: "#EE0000"
+      bg_color: "#C7C7C7"
+    footer:
+      enabled: true
+      text: My footer text
+      size: SMALL
+      color: "#0066CC"
+      bg_color: "#C1C1C1"
+    telemetry: false
+    retention:
+      resolved_deploy: 1
+      deleted_runtime: 2
+      all_runtime: 3
+      attempted_deploy: 4
+      attempted_runtime: 5
+      image: 6
+      expired_vuln_req: 8
+      report_history: 9
+      report_downloadable: 20
+      report_downloadable_size: 400 MB
+      administration_events: 10
+    decommissioned_clusters:
+      retention: 11
+      ignore_labels:
+        - label: label1
+          value: value1
+        - label: label2
+          value: value2
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the configuration is updated (no change) 1
+  herve4m.rhacs_configuration.rhacs_config:
+    login:
+      enabled: true
+      text: My login text
+    header:
+      enabled: true
+      text: My header text
+      size: MEDIUM
+      color: "#EE0000"
+      bg_color: "#C7C7C7"
+    footer:
+      enabled: true
+      text: My footer text
+      size: SMALL
+      color: "#0066CC"
+      bg_color: "#C1C1C1"
+    telemetry: false
+    retention:
+      resolved_deploy: 1
+      deleted_runtime: 2
+      all_runtime: 3
+      attempted_deploy: 4
+      attempted_runtime: 5
+      image: 6
+      expired_vuln_req: 8
+      report_history: 9
+      report_downloadable: 20
+      report_downloadable_size: 400 MB
+      administration_events: 10
+    decommissioned_clusters:
+      retention: 11
+      ignore_labels:
+        - label: label1
+          value: value1
+        - label: label2
+          value: value2
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated (no change) 2
+  herve4m.rhacs_configuration.rhacs_config:
+    login:
+      text: My login text
+    header:
+      enabled: true
+      text: My header text
+    footer:
+      enabled: true
+      text: My footer text
+      bg_color: "#C1C1C1"
+    telemetry: false
+    retention:
+      resolved_deploy: 1
+      deleted_runtime: 2
+      all_runtime: 3
+      report_history: 9
+      report_downloadable: 20
+      report_downloadable_size: 400 MB
+      administration_events: 10
+    decommissioned_clusters:
+      retention: 11
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated (no change) 3
+  herve4m.rhacs_configuration.rhacs_config:
+    login: {}
+    header: {}
+    footer: {}
+    retention: {}
+    decommissioned_clusters: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated (no change) 4
+  herve4m.rhacs_configuration.rhacs_config:
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated 2
+  herve4m.rhacs_configuration.rhacs_config:
+    login:
+      enabled: false
+      text: My login text
+    header:
+      enabled: false
+    footer:
+      enabled: false
+    telemetry: true
+    retention:
+      resolved_deploy: 12
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+...

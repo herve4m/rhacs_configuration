@@ -1,0 +1,11 @@
+---
+rhacs_host: localhost:8443
+
+rhacs_username: admin
+rhacs_password: redhat123
+
+# If you do not define your API token in the following default_token
+# variable, then the test framework tries to get one by using the
+# `herve4m.rhacs_configuration.rhacs_api_token' module.
+default_token: ""
+...

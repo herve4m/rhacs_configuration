@@ -1,0 +1,92 @@
+---
+- name: Ensure the policies are exported
+  herve4m.rhacs_configuration.rhacs_policy_export:
+    policies:
+      - ADD Command used instead of COPY
+      - Curl in Image
+      - Drop All Capabilities
+    ignore_missing: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure that the export is returned
+  ansible.builtin.assert:
+    that: "'policies' in result['export']"
+    fail_msg: The preceding task should have exported the policies
+
+- name: Save the exported security policies
+  ansible.builtin.copy:
+    content: "{{ result['export'] }}"
+    dest: /tmp/exports.json
+    mode: '0600'
+
+- name: Ensure no policies are exported (no change) 1
+  herve4m.rhacs_configuration.rhacs_policy_export:
+    policies: []
+    ignore_missing: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure no policies are exported (no change) 2
+  herve4m.rhacs_configuration.rhacs_policy_export:
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the policy is exported (no change)
+  herve4m.rhacs_configuration.rhacs_policy_export:
+    policies:
+      - no such policy
+    ignore_missing: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: ERROR EXPECTED Ensure the policies are exported
+  herve4m.rhacs_configuration.rhacs_policy_export:
+    policies:
+      - no such policy
+      - Curl in Image
+    ignore_missing: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (policy does not exist)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (policy does not exist)
+
+- name: Remove the export file
+  ansible.builtin.file:
+    path: /tmp/exports.json
+    state: absent
+...

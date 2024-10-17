@@ -1,0 +1,1286 @@
+---
+# Get a token
+- name: Ensure the API token exists
+  herve4m.rhacs_configuration.rhacs_api_token:
+    name: Ansible token
+    role: Admin
+    expiration: "2029-12-02T21:06:00Z"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: token_details
+
+- name: Ensure the Slack notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible slack conf 1
+    type: slack
+    rhacs_url: "{{ rhacs_host }}/portal"
+    slack:
+      webhook: https://hooks.slack.com/services/EXAMPLE
+      annotation_key: slackchannel
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Slack notification method exists (no change) 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible slack conf 1
+    type: slack
+    rhacs_url: "{{ rhacs_host }}/portal"
+    slack:
+      webhook: https://hooks.slack.com/services/EXAMPLE
+      annotation_key: slackchannel
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Slack notification method exists (no change) 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible slack conf 1
+    type: slack
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Slack notification method exists (no change) 3
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible slack conf 1
+    type: slack
+    slack:
+      webhook: https://hooks.slack.com/services/EXAMPLE
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the syslog notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible syslog conf 1
+    type: syslog
+    syslog:
+      host: syslog.example.com
+      port: 4242
+      facility: LOCAL6
+      use_tls: true
+      validate_certs: true
+      message_format: LEGACY
+      extra_fields:
+        - key: key1
+          value: val1
+        - key: key2
+          value: val2
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the syslog notification method exists (no change) 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible syslog conf 1
+    type: syslog
+    syslog:
+      host: syslog.example.com
+      port: 4242
+      facility: LOCAL6
+      use_tls: true
+      validate_certs: true
+      message_format: LEGACY
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the syslog notification method exists (no change) 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible syslog conf 1
+    type: syslog
+    syslog:
+      use_tls: true
+      validate_certs: true
+      message_format: LEGACY
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the AWS Security Hub notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible aws conf 1
+    type: aws
+    aws:
+      aws_id: 123456789012
+      region: us-east-1
+      use_iam: false
+      access_key: AKIAIOSFODNN7EXAMPLE
+      secret_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the AWS Security Hub notification method exists (no change)
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible aws conf 1
+    type: aws
+    aws:
+      aws_id: 123456789012
+      region: us-east-1
+      use_iam: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Google Cloud SCC notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible google conf 1
+    type: google
+    google:
+      source_id: organizations/4242/sources/4242
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Google Cloud SCC notification method exists (no change)
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible google conf 1
+    type: google
+    google:
+      source_id: organizations/4242/sources/4242
+      use_workload_id: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# Skipping Jira integration because it requires a working authentication
+# - name: Ensure the Jira notification method exists
+#   herve4m.rhacs_configuration.rhacs_notifier_integration:
+#     name: ansible jira conf 1
+#     type: jira
+#     jira:
+#       username: rhacsint
+#       password: vs9mrD55NP
+#       issue_type: Sub-task
+#       url: https://example.atlassian.net
+#       mapping_critical: Critical1
+#       mapping_high: High1
+#       mapping_medium: Medium1
+#       mapping_low: Low1
+#       default_fields_JSON: '{"type": 123}'
+#       project: defaultproject
+#       annotation_key: jiraproject
+#     skip_validate_certs: true
+#     rhacs_host: "{{ rhacs_host }}"
+#     rhacs_token: "{{ token_details['token'] }}"
+#   register: result
+
+# - name: Ensure that the task did change something
+#   ansible.builtin.assert:
+#     that: result['changed']
+#     fail_msg: The preceding task should have changed something
+
+# - name: Ensure the Jira notification method exists (no change) 1
+#   herve4m.rhacs_configuration.rhacs_notifier_integration:
+#     name: ansible jira conf 1
+#     type: jira
+#     jira:
+#       issue_type: Sub-task
+#       url: https://example.atlassian.net
+#       mapping_critical: Critical1
+#       mapping_high: High1
+#       mapping_medium: Medium1
+#       mapping_low: Low1
+#       default_fields_JSON: '{"type": 123}'
+#       project: defaultproject
+#       annotation_key: jiraproject
+#     skip_validate_certs: true
+#     rhacs_host: "{{ rhacs_host }}"
+#     rhacs_token: "{{ token_details['token'] }}"
+#   register: result
+
+# - name: Ensure that the task did not change anything
+#   ansible.builtin.assert:
+#     that: not result['changed']
+#     fail_msg: The preceding task should not have changed anything
+
+# - name: Ensure the Jira notification method exists (no change) 2
+#   herve4m.rhacs_configuration.rhacs_notifier_integration:
+#     name: ansible jira conf 1
+#     type: jira
+#     jira:
+#       issue_type: Sub-task
+#       url: https://example.atlassian.net
+#       mapping_medium: Medium1
+#       mapping_low: Low1
+#     skip_validate_certs: true
+#     rhacs_host: "{{ rhacs_host }}"
+#     rhacs_token: "{{ token_details['token'] }}"
+#   register: result
+
+# - name: Ensure that the task did not change anything
+#   ansible.builtin.assert:
+#     that: not result['changed']
+#     fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the email notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible email conf 1
+    type: email
+    email:
+      username: rhacsint
+      password: vs9mrD55NP
+      server: smtp.example.com:465
+      from_header: Security Alerts
+      sender: rhacs@example.com
+      recipient: security@example.com
+      validate_certs: false
+      starttls: LOGIN
+      unauthenticated: false
+      annotation_key: email
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the email notification method exists (no change) 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible email conf 1
+    type: email
+    email:
+      server: smtp.example.com:465
+      from_header: Security Alerts
+      sender: rhacs@example.com
+      recipient: security@example.com
+      validate_certs: false
+      starttls: LOGIN
+      unauthenticated: false
+      annotation_key: email
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the email notification method exists (no change) 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible email conf 1
+    type: email
+    email:
+      server: smtp.example.com:465
+      from_header: Security Alerts
+      sender: rhacs@example.com
+      recipient: security@example.com
+      annotation_key: email
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Splunk notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible splunk conf 1
+    type: splunk
+    splunk:
+      url: https://splunk.example.com:8088/services/collector/event
+      token: B5A79AAD-D822-46CC-80D1-819F80D7BFB0
+      validate_certs: false
+      truncate: 5000
+      audit_logging: true
+      source_type_alert: stackrox-alert1
+      source_type_audit: stackrox-audit-message1
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Splunk notification method exists (no change) 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: does not exist
+    new_name: ansible splunk conf 1
+    type: splunk
+    splunk:
+      url: https://splunk.example.com:8088/services/collector/event
+      validate_certs: false
+      truncate: 5000
+      audit_logging: true
+      source_type_alert: stackrox-alert1
+      source_type_audit: stackrox-audit-message1
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Splunk notification method exists (no change) 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible splunk conf 1
+    type: splunk
+    splunk:
+      url: https://splunk.example.com:8088/services/collector/event
+      validate_certs: false
+      audit_logging: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Pager Duty notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible pagerduty conf 1
+    type: pagerduty
+    pagerduty:
+      api_key: ABCDEFGHIJKL
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Pager Duty notification method exists (no change)
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible pagerduty conf 1
+    type: pagerduty
+    pagerduty: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Sumologic notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sumologic conf 1
+    type: sumologic
+    sumologic:
+      url: https://endpoint.sumologic.com/receiver/v1/http/TOKEN
+      validate_certs: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Sumologic notification method exists (no change)
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sumologic conf 1
+    type: sumologic
+    sumologic:
+      url: https://endpoint.sumologic.com/receiver/v1/http/TOKEN
+      validate_certs: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Microsoft Teams notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible teams conf 1
+    type: teams
+    teams:
+      url: https://outlook.office365.com/webhook/EXAMPLE
+      annotation_key: teamchannel
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Microsoft Teams notification method exists (no change)
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible teams conf 1
+    type: teams
+    teams:
+      url: https://outlook.office365.com/webhook/EXAMPLE
+      annotation_key: teamchannel
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the generic notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 1
+    type: generic
+    generic:
+      webhook: https://hook.example.com:8088/services/collector/event
+      audit_logging: true
+      validate_certs: true
+      ca_cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+      username: rhacsint
+      password: vs9mrD55NP
+      headers:
+        - key: Authorization
+          value: Bearer 123456789
+      extra_fields:
+        - key: key1
+          value: value1
+        - key: key2
+          value: value2
+        - key: key3
+          value: value3
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the generic notification method exists (no change) 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 1
+    type: generic
+    generic:
+      webhook: https://hook.example.com:8088/services/collector/event
+      audit_logging: true
+      validate_certs: true
+      ca_cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+      headers:
+        - key: Authorization
+          value: Bearer 123456789
+      extra_fields:
+        - key: key1
+          value: value1
+        - key: key2
+          value: value2
+        - key: key3
+          value: value3
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the generic notification method exists (no change) 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 1
+    type: generic
+    generic:
+      webhook: https://hook.example.com:8088/services/collector/event
+      audit_logging: true
+      validate_certs: true
+      ca_cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# Rename
+- name: Ensure the generic notification method exists (rename)
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 1
+    new_name: ansible generic conf 2
+    type: generic
+    generic:
+      webhook: https://hook.example.com:8088/services/collector/event
+      audit_logging: true
+      validate_certs: true
+      ca_cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+      headers:
+        - key: Authorization
+          value: Bearer 123456789
+      extra_fields:
+        - key: key1
+          value: value1
+        - key: key2
+          value: value2
+        - key: key3
+          value: value3
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the generic notification method 1 does not exist
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 1
+    type: generic
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the generic notification method 2 exists (no change) 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 1
+    new_name: ansible generic conf 2
+    type: generic
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the generic notification method 2 exists (no change) 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 2
+    new_name: ansible generic conf 2
+    type: generic
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Slack notification method 2 exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible slack conf 2
+    type: slack
+    slack:
+      webhook: https://hooks.slack.com/services/EXAMPLE
+      annotation_key: slackchannel
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: ERROR EXPECTED Ensure the generic method 2 is renamed
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 2
+    new_name: ansible slack conf 2
+    type: generic
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (type discrepancy)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (type discrepancy)
+
+- name: Ensure the generic notification method 1 exists 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 1
+    type: generic
+    generic:
+      webhook: https://hook.example.com:8088/services/collector/event1
+      audit_logging: true
+      validate_certs: true
+      ca_cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+      username: rhacsint
+      password: vs9mrD55NP
+      headers:
+        - key: Authorization
+          value: Bearer 123456789
+      extra_fields:
+        - key: key1
+          value: value1
+        - key: key2
+          value: value2
+        - key: key3
+          value: value3
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the generic notification method exists (renamed/updated)
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 2
+    new_name: ansible generic conf 1
+    type: generic
+    generic:
+      audit_logging: false
+      validate_certs: false
+      username: rhacsint2
+      password: vs9mrD55NP
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the generic notification method 2 does not exist
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 2
+    type: generic
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# Errors
+- name: ERROR EXPECTED Ensure the syslog notification method exists 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible syslog conf 2
+    type: syslog
+    syslog:
+      message_format: LEGACY
+      extra_fields:
+        - key: key1
+          value: val1
+        - key: key2
+          value: val2
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing required parameter)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing required arg)
+
+- name: ERROR EXPECTED Ensure the syslog notification method exists 3
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible syslog conf 3
+    type: syslog
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing parameter section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing parameters)
+
+# Updates
+- name: Ensure the Slack notification method is updated
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible slack conf 1
+    type: slack
+    rhacs_url: "{{ rhacs_host }}"
+    slack:
+      webhook: https://hooks.slack.com/services/EXAMPLE2
+      annotation_key: slackchannel2
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the syslog notification method is updated 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible syslog conf 1
+    type: syslog
+    syslog:
+      host: syslog2.example.com
+      port: 4343
+      facility: LOCAL7
+      use_tls: false
+      validate_certs: false
+      message_format: CEF
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the syslog notification method is updated 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible syslog conf 1
+    type: syslog
+    syslog:
+      host: syslog2.example.com
+      port: 4343
+      facility: LOCAL7
+      use_tls: false
+      validate_certs: false
+      message_format: CEF
+      extra_fields: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the AWS Security Hub notification method is updated 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible aws conf 1
+    type: aws
+    aws:
+      aws_id: 123456789012
+      region: us-east-1
+      use_iam: false
+      access_key: AKIAIOSFODNN7EXAMPLE
+      secret_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the AWS Security Hub notification method is updated 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible aws conf 1
+    type: aws
+    aws:
+      aws_id: 234567890123
+      region: us-east-2
+      use_iam: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Google Cloud SCC notification method is updated 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible google conf 1
+    type: google
+    google:
+      source_id: organizations/4242/sources/4242
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Google Cloud SCC notification method is updated 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible google conf 1
+    type: google
+    google:
+      source_id: organizations/4343/sources/4343
+      use_workload_id: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+# - name: Ensure the Jira notification method is updated 1
+#   herve4m.rhacs_configuration.rhacs_notifier_integration:
+#     name: ansible jira conf 1
+#     type: jira
+#     jira:
+#       username: rhacsint
+#       password: vs9mrD55NP
+#       issue_type: Sub-task
+#       url: https://example.atlassian.net
+#       mapping_critical: Critical1
+#       mapping_high: High1
+#       mapping_medium: Medium1
+#       mapping_low: Low1
+#       default_fields_JSON: '{"type": 123}'
+#       project: defaultproject
+#       annotation_key: jiraproject
+#     skip_validate_certs: true
+#     rhacs_host: "{{ rhacs_host }}"
+#     rhacs_token: "{{ token_details['token'] }}"
+#   register: result
+
+# - name: Ensure that the task did change something
+#   ansible.builtin.assert:
+#     that: result['changed']
+#     fail_msg: The preceding task should have changed something
+
+# - name: Ensure the Jira notification method is updated 2
+#   herve4m.rhacs_configuration.rhacs_notifier_integration:
+#     name: ansible jira conf 1
+#     type: jira
+#     jira:
+#       issue_type: Story
+#       url: https://example2.atlassian.net
+#       mapping_critical: ""
+#       mapping_high: ""
+#       mapping_medium: Medium2
+#       default_fields_JSON: '{"type": 1234}'
+#       project: defaultproject2
+#       annotation_key: jiraproject2
+#     skip_validate_certs: true
+#     rhacs_host: "{{ rhacs_host }}"
+#     rhacs_token: "{{ token_details['token'] }}"
+#   register: result
+
+# - name: Ensure that the task did change something
+#   ansible.builtin.assert:
+#     that: result['changed']
+#     fail_msg: The preceding task should have changed something
+
+- name: Ensure the email notification method is updated 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible email conf 1
+    type: email
+    email:
+      username: rhacsint
+      password: vs9mrD55NP
+      server: smtp.example.com:465
+      from_header: Security Alerts
+      sender: rhacs@example.com
+      recipient: security@example.com
+      validate_certs: false
+      starttls: LOGIN
+      unauthenticated: false
+      annotation_key: email
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the email notification method is updated 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible email conf 1
+    type: email
+    email:
+      server: smtp2.example.com:465
+      from_header: Security Alerts 2
+      sender: rhacs2@example.com
+      recipient: security2@example.com
+      starttls: PLAIN
+      unauthenticated: true
+      annotation_key: email2
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Splunk notification method is updated 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible splunk conf 1
+    type: splunk
+    splunk:
+      url: https://splunk.example.com:8088/services/collector/event
+      token: B5A79AAD-D822-46CC-80D1-819F80D7BFB0
+      validate_certs: false
+      truncate: 5000
+      audit_logging: true
+      source_type_alert: stackrox-alert1
+      source_type_audit: stackrox-audit-message1
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Splunk notification method is updated 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible splunk conf 1
+    type: splunk
+    splunk:
+      url: https://splunk2.example.com:8088/services/collector/event
+      validate_certs: true
+      truncate: 9000
+      audit_logging: false
+      source_type_alert: stackrox-alert2
+      source_type_audit: stackrox-audit-message2
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Pager Duty notification method is updated
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible pagerduty conf 1
+    type: pagerduty
+    pagerduty:
+      api_key: ABCDEFGHIJKL
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Sumologic notification method is updated
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sumologic conf 1
+    type: sumologic
+    sumologic:
+      url: https://endpoint2.sumologic.com/receiver/v1/http/TOKEN
+      validate_certs: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Microsoft Teams notification method is updated
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible teams conf 1
+    type: teams
+    teams:
+      url: https://outlook2.office365.com/webhook/EXAMPLE
+      annotation_key: teamchannel2
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the generic notification method is updated 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 1
+    type: generic
+    generic:
+      webhook: https://hook.example.com:8088/services/collector/event
+      audit_logging: true
+      validate_certs: true
+      ca_cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+      username: rhacsint
+      password: vs9mrD55NP
+      headers:
+        - key: Authorization
+          value: Bearer 123456789
+      extra_fields:
+        - key: key1
+          value: value1
+        - key: key2
+          value: value2
+        - key: key3
+          value: value3
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the generic notification method is updated 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible generic conf 1
+    type: generic
+    generic:
+      webhook: https://hook2.example.com:8088/services/collector/event
+      audit_logging: false
+      validate_certs: false
+      ca_cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+      headers:
+        - key: Authorization
+          value: Bearer 123456789012345
+      extra_fields: []
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+# Remove
+- name: Ensure the notification methods are removed
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: "{{ item.name }}"
+    type: "{{ item.type }}"
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  loop:
+    - name: ansible slack conf 1
+      type: slack
+    - name: ansible slack conf 2
+      type: slack
+    - name: ansible syslog conf 1
+      type: syslog
+    - name: ansible aws conf 1
+      type: aws
+    - name: ansible google conf 1
+      type: google
+    - name: ansible jira conf 1
+      type: jira
+    - name: ansible splunk conf 1
+      type: splunk
+    - name: ansible pagerduty conf 1
+      type: pagerduty
+    - name: ansible sumologic conf 1
+      type: sumologic
+    - name: ansible teams conf 1
+      type: teams
+    - name: ansible generic conf 1
+      type: generic
+    - name: ansible generic conf 2
+      type: generic
+
+- name: Ensure the email notification method does not exist
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible email conf 1
+    type: email
+    email:
+      username: rhacsint2
+      password: vs9mrD55NP2
+      server: smtp2.example.com:465
+      from_header: Security Alerts
+      sender: rhacs@example.com
+      recipient: security@example.com
+      validate_certs: false
+      starttls: PLAIN
+      unauthenticated: false
+      annotation_key: email
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the email notification method does not exist (no change)
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible email conf 1
+    type: email
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ token_details['token'] }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the API token exists
+  herve4m.rhacs_configuration.rhacs_api_token:
+    name: Ansible token
+    role: Admin
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+...

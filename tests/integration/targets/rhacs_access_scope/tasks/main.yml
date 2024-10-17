@@ -1,0 +1,694 @@
+---
+- name: Ensure the access scope exists 1
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 1
+    description: My first access scope with no access
+    rules: {}
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Display the ID
+  ansible.builtin.debug:
+    var: result
+
+- name: Ensure the access scope exists 1 (no change) 1
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 1
+    description: My first access scope with no access
+    rules: {}
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Display the ID
+  ansible.builtin.debug:
+    var: result
+
+- name: Ensure the access scope exists 1 (no change) 2
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the access scope exists 2
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 2
+    description: My first access scope with no access
+    rules:
+      clusters: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the access scope exists 2 (no change) 1
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 2
+    description: My first access scope with no access
+    rules:
+      clusters: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the access scope exists 2 (no change) 2
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 2
+    rules:
+      clusters: []
+      namespaces: []
+      cluster_selectors: []
+      namespace_selectors: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the access scope exists 2 (no change) 3
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 2
+    rules:
+      namespaces: []
+      cluster_selectors: []
+      namespace_selectors: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the access scope exists 2 (no change) 4
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 2
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the access scope exists 2 (no change) 5
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 2
+    new_name: ansible set 2
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the access scope exists 2 (no change) 6
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: does not exist
+    new_name: ansible set 2
+    description: My first access scope with no access
+    rules:
+      clusters: []
+      namespaces: []
+      cluster_selectors: []
+      namespace_selectors: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: ERROR EXPECTED Ensure the access scope 1 is renamed
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 1
+    new_name: ansible set 2
+    description: My first access scope with no access
+    rules:
+      clusters: []
+      namespaces: []
+      cluster_selectors: []
+      namespace_selectors: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (existing destination access scope)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (existing scope)
+
+- name: ERROR EXPECTED Ensure a default access scope is removed
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: Unrestricted
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (removing default access scope)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (default access scope)
+
+- name: ERROR EXPECTED Ensure a default access scope is updated
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: Unrestricted
+    description: My new description
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (updating default access scope)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (default access scope)
+
+# Rename
+- name: Ensure the access scope 2 is renamed/updated
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 2
+    new_name: ansible set 3
+    description: My first access scope with no access 2
+    rules:
+      clusters: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Display the ID
+  ansible.builtin.debug:
+    var: result
+
+- name: Ensure the access scope 2 is removed (no change)
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 2
+    description: My first access scope with no access 2
+    rules:
+      clusters: []
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# Update clusters
+- name: Ensure the access scope 3 is updated 1
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: My third access scope
+    rules:
+      clusters:
+        - cluster01
+        - cluster02
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Display the ID
+  ansible.builtin.debug:
+    var: result
+
+- name: Ensure the access scope 3 is updated 2
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Appending cluster03 and cluster04
+    rules:
+      clusters:
+        - cluster03
+        - cluster04
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the access scope 3 is updated 3
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Setting the cluster10 and cluster11
+    rules:
+      clusters:
+        - cluster10
+        - cluster11
+      clusters_append: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+# Update namespaces
+- name: Ensure the access scope 3 is updated 4
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Namespaces ns01 and ns02
+    rules:
+      namespaces:
+        - cluster: cluster01
+          namespace: ns01
+        - cluster: cluster01
+          namespace: ns02
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the access scope 3 is updated 5
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Appending ns03
+    rules:
+      namespaces:
+        - cluster: cluster02
+          namespace: ns03
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the access scope 3 is updated 6
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Setting the ns04, ns05, and ns06
+    rules:
+      namespaces:
+        - cluster: cluster03
+          namespace: ns04
+        - cluster: cluster03
+          namespace: ns05
+        - cluster: cluster03
+          namespace: ns06
+      namespaces_append: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+# Update cluster_selectors
+- name: Ensure the access scope 3 is updated 7
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Cluster labels 01 and 02
+    rules:
+      cluster_selectors:
+        - label: label01
+          values:
+            - v01
+            - v02
+        - label: label02
+          values:
+            - v03
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the access scope 3 is updated 7 (no change)
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Cluster labels 01 and 02
+    rules:
+      cluster_selectors:
+        - label: label02
+          values:
+            - v03
+        - label: label01
+          values:
+            - v01
+            - v02
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the access scope 3 is updated 8
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Appending label03
+    rules:
+      cluster_selectors:
+        - label: label03
+          values:
+            - v04
+            - v05
+            - v06
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the access scope 3 is updated 8 (no change)
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Appending label03
+    rules:
+      cluster_selectors:
+        - label: label03
+          values:
+            - v04
+            - v05
+            - v06
+        - label: label02
+          values:
+            - v03
+        - label: label01
+          values:
+            - v01
+            - v02
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the access scope 3 is updated 9
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Setting the label04
+    rules:
+      cluster_selectors:
+        - label: label04
+          values:
+            - v07
+            - v08
+            - v09
+            - v10
+      cluster_selectors_append: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+# Update namespace_selectors
+- name: Ensure the access scope 3 is updated 10
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Namespace labels 01 and 02
+    rules:
+      namespace_selectors:
+        - label: label01
+          values:
+            - v01
+            - v02
+        - label: label02
+          values:
+            - v03
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the access scope 3 is updated 10 (no change)
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Namespace labels 01 and 02
+    rules:
+      namespace_selectors:
+        - label: label02
+          values:
+            - v03
+        - label: label01
+          values:
+            - v01
+            - v02
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the access scope 3 is updated 11
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Appending label03
+    rules:
+      namespace_selectors:
+        - label: label03
+          values:
+            - v04
+            - v05
+            - v06
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the access scope 3 is updated 11 (no change)
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Appending label03
+    rules:
+      namespace_selectors:
+        - label: label03
+          values:
+            - v04
+            - v05
+            - v06
+        - label: label02
+          values:
+            - v03
+        - label: label01
+          values:
+            - v01
+            - v02
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the access scope 3 is updated 12
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    description: Setting the label04
+    rules:
+      namespace_selectors:
+        - label: label04
+          values:
+            - v07
+            - v08
+            - v09
+            - v10
+      namespace_selectors_append: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+# Remove
+- name: Ensure the access scope 1 is removed
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 1
+    new_name: ansible set 3
+    description: My first access scope with no access 2
+    rules:
+      clusters: []
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the access scope 1 is removed (no change)
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 1
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the access scope 2 is removed
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 2
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+
+- name: Ensure the access scope 3 is removed
+  herve4m.rhacs_configuration.rhacs_access_scope:
+    name: ansible set 3
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+...

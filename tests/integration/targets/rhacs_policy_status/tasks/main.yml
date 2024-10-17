@@ -1,0 +1,137 @@
+---
+- name: Ensure the policy status is updated
+  herve4m.rhacs_configuration.rhacs_policy_status:
+    enable: false
+    policies:
+      - ADD Command used instead of COPY
+      - Curl in Image
+      - Drop All Capabilities
+    ignore_missing: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+
+- name: Ensure the policy status is updated 1
+  herve4m.rhacs_configuration.rhacs_policy_status:
+    enable: true
+    policies:
+      - ADD Command used instead of COPY
+      - Curl in Image
+    ignore_missing: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the policy status is updated 1 (no change)
+  herve4m.rhacs_configuration.rhacs_policy_status:
+    enable: true
+    policies:
+      - Curl in Image
+      - ADD Command used instead of COPY
+    ignore_missing: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: ERROR EXPECTED Ensure the policy status is updated 1
+  herve4m.rhacs_configuration.rhacs_policy_status:
+    enable: true
+    policies:
+      - No such policy
+      - Drop All Capabilities
+    ignore_missing: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (policy does not exist)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (policy does not exist)
+
+- name: Ensure the policy status is updated 2
+  herve4m.rhacs_configuration.rhacs_policy_status:
+    enable: true
+    policies:
+      - Drop All Capabilities
+      - No such policy
+    ignore_missing: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the policy status is updated 2 (no change)
+  herve4m.rhacs_configuration.rhacs_policy_status:
+    enable: true
+    policies:
+      - Drop All Capabilities
+      - No such policy
+    ignore_missing: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the policy status is updated 3
+  herve4m.rhacs_configuration.rhacs_policy_status:
+    enable: false
+    policies:
+      - ADD Command used instead of COPY
+      - Curl in Image
+      - Drop All Capabilities
+      - No such policy
+    ignore_missing: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the policy status is updated 3 (no change)
+  herve4m.rhacs_configuration.rhacs_policy_status:
+    enable: false
+    policies:
+      - ADD Command used instead of COPY
+      - Curl in Image
+      - Drop All Capabilities
+      - No such policy
+    ignore_missing: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+...

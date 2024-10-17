@@ -1,0 +1,72 @@
+---
+# Set the rhacs_token fact.
+#
+# The rhacs_token parameter is build from (in order):
+# 1) The default_token parameter from the defaults/main.yml file.
+# 2) If the default_token parameter in defaults/main.yml is missing or empty,
+#    then the default_token parameter from the /tmp/rhacs_collection_TOKEN.yml
+#    file is used instead.
+# 3) If the default_token parameter is still not set (not in defaults/main.yml
+#    and not in /tmp/rhacs_collection_TOKEN.yml), then the
+#    `herve4m.rhacs_configuration.rhacs_api_token' module is used. If that
+#    fails, then an error is reported.
+# 4) The retrieved token is stored in /tmp/rhacs_collection_TOKEN.yml so that
+#    it can be reused by other playbooks.
+- name: Set the rhacs_token fact from defaults/main.yml
+  ansible.builtin.set_fact:
+    rhacs_token: "{{ default_token }}"
+  when:
+    - default_token is defined
+    - default_token|length > 0
+
+- name: Set the rhacs_token fact from /tmp/rhacs_collection_TOKEN.yml
+  when: rhacs_token is not defined or rhacs_token|length == 0
+  block:
+    - name: Get the API token from /tmp/rhacs_collection_TOKEN.yml
+      ansible.builtin.include_vars:
+        file: /tmp/rhacs_collection_TOKEN.yml
+      failed_when: false
+
+    - name: Set the rhacs_token fact
+      ansible.builtin.set_fact:
+        rhacs_token: "{{ default_token }}"
+      when:
+        - default_token is defined
+        - default_token|length > 0
+
+- name: Get the rhacs_token fact by using the rhacs_token module
+  when: rhacs_token is not defined or rhacs_token|length == 0
+  block:
+    - name: Ensure the API token is created
+      herve4m.rhacs_configuration.rhacs_api_token:
+        name: Token for testing modules
+        role: Admin
+        rhacs_host: "{{ rhacs_host }}"
+        skip_validate_certs: true
+        rhacs_username: "{{ rhacs_username }}"
+        rhacs_password: "{{ rhacs_password }}"
+      register: result
+      failed_when: false
+
+    - name: Ensure that the API token is defined
+      ansible.builtin.assert:
+        that: "result is defined and 'token' in result"
+        fail_msg: >
+          I cannot create an API token for you.
+          Please define your token in the defaults/main.yml file.
+        quiet: true
+
+    - name: Ensure the /tmp/rhacs_collection_TOKEN.yml file is created
+      ansible.builtin.copy:
+        dest: /tmp/rhacs_collection_TOKEN.yml
+        content: "---\ndefault_token: {{ result['token'] }}\n"
+        mode: "0600"
+
+    - name: Store the API token in the rhacs_token fact
+      ansible.builtin.set_fact:
+        rhacs_token: "{{ result['token'] }}"
+
+- name: Display the API token
+  ansible.builtin.debug:
+    msg: "API token: {{ rhacs_token }}"
+...

@@ -1,0 +1,18 @@
+---
+- name: Running a test playbook (role)
+  hosts: localhost
+  become: false
+  gather_facts: false
+
+  tasks:
+    - name: Test the role
+      ansible.builtin.include_role:
+        # Specify the role to test
+        name: rhacs_policy_category
+      vars:
+        # Set the connection parameters to your RHACS installation with the
+        # following variables. If you do not set the default_token parameter,
+        # then the role tries to create one by using the admin user
+        # (password: redhat123).
+        rhacs_host: central.example.com
+        # default_token: AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHHIIII

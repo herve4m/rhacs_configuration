@@ -1,0 +1,30 @@
+---
+namespace: herve4m
+name: rhacs_configuration
+version: 1.0.0
+readme: README.md
+authors:
+  - Hervé Quatremain <herve.quatremain@redhat.com>
+description: >
+  Ansible modules to configure Red Hat Advanced Cluster Security for
+  Kubernetes (RHACS) and StackRox installations.
+license:
+  - GPL-3.0-or-later
+tags:
+  - security
+  - infrastructure
+  - stackrox
+  - rhacs
+  - kubernetes
+
+repository: https://github.com/herve4m/rhacs_configuration
+
+# The URL to any online docs
+documentation: https://github.com/herve4m/rhacs_configuration
+
+# The URL to the home page of the collection/project
+homepage: https://github.com/herve4m/rhacs_configuration
+
+# The URL to the collection issue tracker
+issues: https://github.com/herve4m/rhacs_configuration/issues
+...
