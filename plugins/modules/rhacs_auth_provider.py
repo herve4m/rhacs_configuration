@@ -517,13 +517,6 @@ def main():
             name,
             "/v1/authProviders/{id}".format(id=id),
         )
-        id = new_config.get("id", "") if new_config else ""
-        module.delete(
-            new_config,
-            "authentication provider",
-            new_name,
-            "/v1/authProviders/{id}".format(id=id),
-        )
 
     if not config and new_config:
         config = new_config
@@ -631,7 +624,7 @@ def main():
             if use_client_secret is False and mode == "query":
                 module.fail_json(
                     msg=(
-                        "when `mode=query` in the `oidc' section, "
+                        "when `mode=query' in the `oidc' section, "
                         "`use_client_secret' must be true, and `client_secret' "
                         "must be set"
                     )
@@ -807,7 +800,7 @@ def main():
         if use_client_secret is False and mode == "query":
             module.fail_json(
                 msg=(
-                    "when `mode=query` in the `oidc' section, "
+                    "when `mode=query' in the `oidc' section, "
                     "`use_client_secret' must be true, and `client_secret' "
                     "must be set"
                 )

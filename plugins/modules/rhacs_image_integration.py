@@ -983,7 +983,7 @@ def main():
                     module.fail_json(
                         msg=(
                             "the `SCANNER' and `BOTH' categories "
-                            "cannot be used when `use_workload_id` is true"
+                            "cannot be used when `use_workload_id' is true"
                         )
                     )
                 use_workload_id = False
@@ -1398,7 +1398,7 @@ def main():
             module.fail_json(
                 msg=(
                     "the `SCANNER' and `BOTH' categories "
-                    "cannot be used when `use_workload_id` is true"
+                    "cannot be used when `use_workload_id' is true"
                 )
             )
 

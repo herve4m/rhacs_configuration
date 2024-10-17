@@ -707,7 +707,7 @@ def main():
             module.fail_json(
                 msg=(
                     "at least a rule (in `rules'), or a collection (in "
-                    "`attached_collections`) is required when creating a "
+                    "`attached_collections') is required when creating a "
                     "deployment collection."
                 )
             )
@@ -820,7 +820,7 @@ def main():
         module.fail_json(
             msg=(
                 "at least a rule (in `deployments', `namespaces', or `clusters'), "
-                "or a collection (in `attached_collections`) is required."
+                "or a collection (in `attached_collections') is required."
             )
         )
 

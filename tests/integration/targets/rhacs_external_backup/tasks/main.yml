@@ -17,7 +17,7 @@
   ignore_errors: true
   register: result
 
-- name: Ensure that the task failed
+- name: Ensure that the task failed (missing bucket and region)
   ansible.builtin.assert:
     that: result['failed']
     fail_msg: The preceding task should have failed (bucket and region)
@@ -42,10 +42,10 @@
   ignore_errors: true
   register: result
 
-- name: Ensure that the task failed
+- name: Ensure that the task failed (missing keys)
   ansible.builtin.assert:
     that: result['failed']
-    fail_msg: The preceding task should have failed (keys)
+    fail_msg: The preceding task should have failed (missing keys)
 
 - name: ERROR EXPECTED Ensure the S3 backup conf exists (missing S3 conf)
   herve4m.rhacs_configuration.rhacs_external_backup:
@@ -63,10 +63,10 @@
   ignore_errors: true
   register: result
 
-- name: Ensure that the task failed
+- name: Ensure that the task failed (missing S3 conf)
   ansible.builtin.assert:
     that: result['failed']
-    fail_msg: The preceding task should have failed (S3 conf)
+    fail_msg: The preceding task should have failed (missing S3 conf)
 
 - name: Ensure the S3 external backup conf exists
   herve4m.rhacs_configuration.rhacs_external_backup:
@@ -191,6 +191,32 @@
     fail_msg: The preceding task should have changed something
 
 # Updates
+- name: ERROR EXPECTED Ensure the S3 external backup conf is updated
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_S3_backups
+    type: s3
+    backups_to_retain: 3
+    interval: DAILY
+    week_day: Tuesday
+    hour: 23
+    minute: 42
+    s3:
+      use_iam: false
+      bucket: rhacs-backups
+      object_prefix: central1
+      region: us-east-1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing S3 parameters when use_iam=false)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing S3 parameters)
+
 - name: Ensure the S3 external backup conf is updated (1)
   herve4m.rhacs_configuration.rhacs_external_backup:
     name: weekly_S3_backups
@@ -295,7 +321,7 @@
   ignore_errors: true
   register: result
 
-- name: Ensure that the task failed
+- name: Ensure that the task failed (wrong hour)
   ansible.builtin.assert:
     that: result['failed']
     fail_msg: The preceding task should have failed (wrong hour)
@@ -320,7 +346,7 @@
   ignore_errors: true
   register: result
 
-- name: Ensure that the task failed
+- name: Ensure that the task failed (wrong minute)
   ansible.builtin.assert:
     that: result['failed']
     fail_msg: The preceding task should have failed (wrong minute)
@@ -344,7 +370,7 @@
   ignore_errors: true
   register: result
 
-- name: Ensure that the task failed
+- name: Ensure that the task failed (wrong retention)
   ansible.builtin.assert:
     that: result['failed']
     fail_msg: The preceding task should have failed (wrong retention)
@@ -366,10 +392,29 @@
   ignore_errors: true
   register: result
 
-- name: Ensure that the task failed
+- name: Ensure that the task failed (wrong service account)
   ansible.builtin.assert:
     that: result['failed']
     fail_msg: The preceding task should have failed (wrong service account)
+
+- name: ERROR EXPECTED Ensure the GCS backup conf exists (missing gcs option)
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: weekly_GCS_backups
+    type: gcs
+    backups_to_retain: 1
+    interval: WEEKLY
+    week_day: Monday
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing gcs option)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing gcs option)
 
 - name: Ensure the GCS external backup conf exists
   herve4m.rhacs_configuration.rhacs_external_backup:

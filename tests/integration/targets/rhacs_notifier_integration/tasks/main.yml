@@ -1,15 +1,190 @@
 ---
-# Get a token
-- name: Ensure the API token exists
-  herve4m.rhacs_configuration.rhacs_api_token:
-    name: Ansible token
-    role: Admin
-    expiration: "2029-12-02T21:06:00Z"
-    state: present
+- name: ERROR EXPECTED Ensure the notification method exists 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible conf 1
+    type: slack
+    rhacs_url: "{{ rhacs_host }}/portal"
+    slack: {}
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
     rhacs_token: "{{ rhacs_token }}"
-  register: token_details
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
+
+- name: ERROR EXPECTED Ensure the notification method exists 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible conf 1
+    type: generic
+    rhacs_url: "{{ rhacs_host }}/portal"
+    generic: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
+
+- name: ERROR EXPECTED Ensure the notification method exists 3
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible conf 1
+    type: jira
+    rhacs_url: "{{ rhacs_host }}/portal"
+    jira: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
+
+- name: ERROR EXPECTED Ensure the notification method exists 4
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible conf 1
+    type: email
+    rhacs_url: "{{ rhacs_host }}/portal"
+    email: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
+
+- name: ERROR EXPECTED Ensure the notification method exists 5
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible conf 1
+    type: google
+    rhacs_url: "{{ rhacs_host }}/portal"
+    google: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
+
+- name: ERROR EXPECTED Ensure the notification method exists 6
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible conf 1
+    type: splunk
+    rhacs_url: "{{ rhacs_host }}/portal"
+    splunk: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
+
+- name: ERROR EXPECTED Ensure the notification method exists 7
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible conf 1
+    type: pagerduty
+    rhacs_url: "{{ rhacs_host }}/portal"
+    pagerduty: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
+
+- name: ERROR EXPECTED Ensure the notification method exists 8
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible conf 1
+    type: sumologic
+    rhacs_url: "{{ rhacs_host }}/portal"
+    sumologic: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
+
+- name: ERROR EXPECTED Ensure the notification method exists 9
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible conf 1
+    type: teams
+    rhacs_url: "{{ rhacs_host }}/portal"
+    teams: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
+
+- name: ERROR EXPECTED Ensure the notification method exists 10
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible conf 1
+    type: aws
+    rhacs_url: "{{ rhacs_host }}/portal"
+    aws: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
+
+- name: ERROR EXPECTED Ensure the notification method exists 11
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible conf 1
+    type: syslog
+    rhacs_url: "{{ rhacs_host }}/portal"
+    syslog: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration section)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
 
 - name: Ensure the Slack notification method exists
   herve4m.rhacs_configuration.rhacs_notifier_integration:
@@ -22,7 +197,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -41,7 +216,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -56,7 +231,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -73,7 +248,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -100,7 +275,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -122,7 +297,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -141,7 +316,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -161,7 +336,7 @@
       secret_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -179,7 +354,7 @@
       use_iam: false
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -198,7 +373,7 @@
         'gcs_sa_key.json') }}"
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -215,7 +390,7 @@
       use_workload_id: false
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -242,7 +417,7 @@
 #       annotation_key: jiraproject
 #     skip_validate_certs: true
 #     rhacs_host: "{{ rhacs_host }}"
-#     rhacs_token: "{{ token_details['token'] }}"
+#     rhacs_token: "{{ rhacs_token }}"
 #   register: result
 
 # - name: Ensure that the task did change something
@@ -266,7 +441,7 @@
 #       annotation_key: jiraproject
 #     skip_validate_certs: true
 #     rhacs_host: "{{ rhacs_host }}"
-#     rhacs_token: "{{ token_details['token'] }}"
+#     rhacs_token: "{{ rhacs_token }}"
 #   register: result
 
 # - name: Ensure that the task did not change anything
@@ -285,7 +460,7 @@
 #       mapping_low: Low1
 #     skip_validate_certs: true
 #     rhacs_host: "{{ rhacs_host }}"
-#     rhacs_token: "{{ token_details['token'] }}"
+#     rhacs_token: "{{ rhacs_token }}"
 #   register: result
 
 # - name: Ensure that the task did not change anything
@@ -310,7 +485,7 @@
       annotation_key: email
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -333,7 +508,7 @@
       annotation_key: email
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -353,7 +528,7 @@
       annotation_key: email
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -375,7 +550,7 @@
       source_type_audit: stackrox-audit-message1
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -397,7 +572,7 @@
       source_type_audit: stackrox-audit-message1
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -415,7 +590,7 @@
       audit_logging: true
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -431,7 +606,7 @@
       api_key: ABCDEFGHIJKL
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -446,7 +621,7 @@
     pagerduty: {}
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -463,7 +638,7 @@
       validate_certs: false
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -480,7 +655,7 @@
       validate_certs: false
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -497,7 +672,7 @@
       annotation_key: teamchannel
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -514,7 +689,7 @@
       annotation_key: teamchannel
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -545,7 +720,7 @@
           value: value3
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -574,7 +749,7 @@
           value: value3
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -593,7 +768,7 @@
       ca_cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -624,7 +799,7 @@
           value: value3
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -639,7 +814,7 @@
     state: absent
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -654,7 +829,7 @@
     type: generic
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -669,7 +844,7 @@
     type: generic
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -687,7 +862,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -702,7 +877,7 @@
     type: generic
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   ignore_errors: true
   register: result
 
@@ -734,7 +909,7 @@
           value: value3
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -754,7 +929,7 @@
       password: vs9mrD55NP
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -769,7 +944,7 @@
     state: absent
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything
@@ -792,7 +967,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   ignore_errors: true
   register: result
 
@@ -808,7 +983,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   ignore_errors: true
   register: result
 
@@ -818,6 +993,33 @@
     fail_msg: The preceding task should have failed (missing parameters)
 
 # Updates
+- name: ERROR EXPECTED Ensure the Slack notification method is updated
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible slack conf 1
+    type: email
+    rhacs_url: "{{ rhacs_host }}"
+    email:
+      username: rhacsint
+      password: vs9mrD55NP
+      server: smtp.example.com:465
+      from_header: Security Alerts
+      sender: rhacs@example.com
+      recipient: security@example.com
+      validate_certs: false
+      starttls: LOGIN
+      unauthenticated: false
+      annotation_key: email
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (changing the type)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (changing the type)
+
 - name: Ensure the Slack notification method is updated
   herve4m.rhacs_configuration.rhacs_notifier_integration:
     name: ansible slack conf 1
@@ -829,7 +1031,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -851,7 +1053,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -874,7 +1076,7 @@
     state: present
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -894,7 +1096,7 @@
       secret_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -912,7 +1114,7 @@
       use_iam: true
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -931,7 +1133,7 @@
         'gcs_sa_key.json') }}"
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -948,7 +1150,7 @@
       use_workload_id: true
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -974,7 +1176,7 @@
 #       annotation_key: jiraproject
 #     skip_validate_certs: true
 #     rhacs_host: "{{ rhacs_host }}"
-#     rhacs_token: "{{ token_details['token'] }}"
+#     rhacs_token: "{{ rhacs_token }}"
 #   register: result
 
 # - name: Ensure that the task did change something
@@ -997,7 +1199,7 @@
 #       annotation_key: jiraproject2
 #     skip_validate_certs: true
 #     rhacs_host: "{{ rhacs_host }}"
-#     rhacs_token: "{{ token_details['token'] }}"
+#     rhacs_token: "{{ rhacs_token }}"
 #   register: result
 
 # - name: Ensure that the task did change something
@@ -1022,7 +1224,7 @@
       annotation_key: email
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -1044,7 +1246,7 @@
       annotation_key: email2
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -1066,7 +1268,7 @@
       source_type_audit: stackrox-audit-message1
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -1087,7 +1289,7 @@
       source_type_audit: stackrox-audit-message2
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -1103,7 +1305,7 @@
       api_key: ABCDEFGHIJKL
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -1120,7 +1322,7 @@
       validate_certs: true
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -1137,7 +1339,7 @@
       annotation_key: teamchannel2
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -1168,7 +1370,7 @@
           value: value3
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -1191,7 +1393,7 @@
       extra_fields: []
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -1207,7 +1409,7 @@
     state: absent
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   loop:
     - name: ansible slack conf 1
       type: slack
@@ -1252,7 +1454,7 @@
     state: absent
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did change something
@@ -1267,7 +1469,7 @@
     state: absent
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ token_details['token'] }}"
+    rhacs_token: "{{ rhacs_token }}"
   register: result
 
 - name: Ensure that the task did not change anything

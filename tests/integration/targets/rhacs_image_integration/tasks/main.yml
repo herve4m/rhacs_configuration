@@ -1,4 +1,105 @@
 ---
+- name: ERROR EXPECTED Ensure the docker image integration exists
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible conf 1
+    type: docker
+    run_test: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing configuration)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing configuration)
+
+- name: ERROR EXPECTED Ensure the image integration exists 1
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible conf 1
+    type: ecr
+    run_test: false
+    ecr: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing conf)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing conf)
+
+- name: ERROR EXPECTED Ensure the image integration exists 2
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible conf 1
+    type: google
+    run_test: false
+    google: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing conf)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing conf)
+
+- name: ERROR EXPECTED Ensure the image integration exists 3
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible conf 1
+    type: artifactregistry
+    run_test: false
+    artifactregistry: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing conf)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing conf)
+
+- name: ERROR EXPECTED Ensure the image integration exists 4
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible conf 1
+    type: ibm
+    run_test: false
+    ibm: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing conf)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing conf)
+
+- name: ERROR EXPECTED Ensure the image integration exists 5
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible conf 1
+    type: docker
+    run_test: false
+    docker: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing conf)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing conf)
+
 - name: Ensure the docker image integration exists
   herve4m.rhacs_configuration.rhacs_image_integration:
     name: ansible docker conf 1
@@ -782,6 +883,24 @@
     fail_msg: The preceding task should not have changed anything
 
 # Updates
+- name: ERROR EXPECTED Ensure the docker image integration is updated (type)
+  herve4m.rhacs_configuration.rhacs_image_integration:
+    name: ansible docker conf 1
+    type: nexus
+    run_test: false
+    nexus:
+      endpoint: nexus.example.com
+      validate_certs: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (changing type)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (changing type)
 
 - name: Ensure the docker image integration is updated
   herve4m.rhacs_configuration.rhacs_image_integration:

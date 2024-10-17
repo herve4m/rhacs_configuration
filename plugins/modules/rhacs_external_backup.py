@@ -472,7 +472,7 @@ def main():
         if provider_type == "s3":
             # Verify the S3 parameters
             if not s3:
-                module.fail_json(msg="type is s3 but the `s3` parameter is missing")
+                module.fail_json(msg="type is s3 but the `s3' parameter is missing")
             missing_args = []
             if not s3.get("bucket"):
                 missing_args.append("bucket")
@@ -506,7 +506,7 @@ def main():
         else:
             # Verify the GCS parameters
             if not gcs:
-                module.fail_json(msg="type is gcs but the `gcs` parameter is missing")
+                module.fail_json(msg="type is gcs but the `gcs' parameter is missing")
             missing_args = []
             if not gcs.get("bucket"):
                 missing_args.append("bucket")
