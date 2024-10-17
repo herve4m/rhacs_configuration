@@ -517,13 +517,6 @@ def main():
             name,
             "/v1/authProviders/{id}".format(id=id),
         )
-        id = new_config.get("id", "") if new_config else ""
-        module.delete(
-            new_config,
-            "authentication provider",
-            new_name,
-            "/v1/authProviders/{id}".format(id=id),
-        )
 
     if not config and new_config:
         config = new_config

@@ -886,72 +886,7 @@
     that: result['changed']
     fail_msg: The preceding task should have changed something
 
-- name: Ensure the auth provider exists 10
-  herve4m.rhacs_configuration.rhacs_auth_provider:
-    name: ansible auth 10
-    type: auth0
-    rhacs_url: "{{ rhacs_host }}/portal"
-    auth0:
-      tenant_url: https://accounts.google.com
-      client_id: MyClientID
-    state: present
-    skip_validate_certs: true
-    rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ rhacs_token }}"
-  register: result
-
-- name: Ensure that the task did change something
-  ansible.builtin.assert:
-    that: result['changed']
-    fail_msg: The preceding task should have changed something
-
 # Delete
-- name: Ensure some authentication providers are removed
-  herve4m.rhacs_configuration.rhacs_auth_provider:
-    name: ansible auth 1
-    new_name: ansible auth 10
-    type: auth0
-    state: absent
-    skip_validate_certs: true
-    rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ rhacs_token }}"
-  register: result
-
-- name: Ensure that the task did change something
-  ansible.builtin.assert:
-    that: result['changed']
-    fail_msg: The preceding task should have changed something
-
-- name: Ensure the authentication provider 1 is removed (no change)
-  herve4m.rhacs_configuration.rhacs_auth_provider:
-    name: ansible auth 1
-    type: auth0
-    state: absent
-    skip_validate_certs: true
-    rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ rhacs_token }}"
-  register: result
-
-- name: Ensure that the task did not change anything
-  ansible.builtin.assert:
-    that: not result['changed']
-    fail_msg: The preceding task should not have changed anything
-
-- name: Ensure the authentication provider 10 is removed (no change)
-  herve4m.rhacs_configuration.rhacs_auth_provider:
-    name: ansible auth 10
-    type: auth0
-    state: absent
-    skip_validate_certs: true
-    rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ rhacs_token }}"
-  register: result
-
-- name: Ensure that the task did not change anything
-  ansible.builtin.assert:
-    that: not result['changed']
-    fail_msg: The preceding task should not have changed anything
-
 - name: Ensure the authentication providers are removed
   herve4m.rhacs_configuration.rhacs_auth_provider:
     name: "{{ item.name }}"
@@ -961,6 +896,8 @@
     rhacs_host: "{{ rhacs_host }}"
     rhacs_token: "{{ rhacs_token }}"
   loop:
+    - name: ansible auth 1
+      type: auth0
     - name: ansible auth 2
       type: google
     - name: ansible auth 3
