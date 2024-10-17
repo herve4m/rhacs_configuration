@@ -156,7 +156,7 @@ For example, instead of repeating the `rhacs_host`, `rhacs_username`, and `rhacs
         name: Slack notifications
         type: slack
         slack:
-          webhook: https://hooks.slack.com/services/T5GZEGU3A/A8DCLAV6V/1nKfHowJCwjj5fEQus3eh4dh
+          webhook: https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
           annotation_key: slack_webhook
         state: present
 

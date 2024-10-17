@@ -67,7 +67,7 @@ options:
       webhook:
         description:
           - URL of the default Slack webhook, such as
-            C(https://hooks.slack.com/services/EXAMPLE)
+            C(https://hooks.slack.com/services/T00000000/B00000000/XXXX...XXXX)
           - You can overwrite the default webhook by specifying a custom
             webhook in your Kubernetes workloads in an annotation which name
             is defined by the O(slack.annotation_key) parameter.
@@ -809,7 +809,10 @@ def main():
                 ),
                 secret_key=dict(
                     aliases=["aws_secret_access_key", "aws_secret_key"],
-                    fallback=(env_fallback, ["AWS_SECRET_ACCESS_KEY", "AWS_SECRET_KEY"]),
+                    fallback=(
+                        env_fallback,
+                        ["AWS_SECRET_ACCESS_KEY", "AWS_SECRET_KEY"],
+                    ),
                     no_log=True,
                 ),
                 region=dict(
@@ -1322,7 +1325,7 @@ def main():
                 "allowUnauthenticatedSmtp": (
                     unauthenticated if unauthenticated is not None else False
                 ),
-                "disableTLS": not validate_certs if validate_certs is not None else False,
+                "disableTLS": (not validate_certs if validate_certs is not None else False),
                 "startTLSAuthMethod": starttls if starttls else "DISABLED",
             }
             new_fields["labelDefault"] = recipient
@@ -1354,9 +1357,11 @@ def main():
                 "httpToken": token,
                 "truncate": truncate if truncate else 10000,
                 "insecure": not validate_certs if validate_certs is not None else False,
-                "auditLoggingEnabled": audit_logging if audit_logging is not None else False,
+                "auditLoggingEnabled": (
+                    audit_logging if audit_logging is not None else False
+                ),
                 "sourceTypes": {
-                    "alert": source_type_alert if source_type_alert else "stackrox-alert",
+                    "alert": (source_type_alert if source_type_alert else "stackrox-alert"),
                     "audit": (
                         source_type_audit if source_type_audit else "stackrox-audit-message"
                     ),
@@ -1388,7 +1393,9 @@ def main():
 
             new_fields["sumologic"] = {
                 "httpSourceAddress": url,
-                "skipTLSVerify": not validate_certs if validate_certs is not None else False,
+                "skipTLSVerify": (
+                    not validate_certs if validate_certs is not None else False
+                ),
             }
 
         elif reg_conf["conf_name"] == "teams":
@@ -1424,8 +1431,12 @@ def main():
 
             new_fields["generic"] = {
                 "endpoint": webhook,
-                "skipTLSVerify": not validate_certs if validate_certs is not None else False,
-                "auditLoggingEnabled": audit_logging if audit_logging is not None else False,
+                "skipTLSVerify": (
+                    not validate_certs if validate_certs is not None else False
+                ),
+                "auditLoggingEnabled": (
+                    audit_logging if audit_logging is not None else False
+                ),
                 "caCert": ca_cert if ca_cert else "",
                 "username": username if username else "",
                 "password": password if password else "",
