@@ -25,3 +25,4 @@ action_groups:
     - rhacs_policy_clone
     - rhacs_policy_export
     - rhacs_policy_import
+    - rhacs_compliance_schedule

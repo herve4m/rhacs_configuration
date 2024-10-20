@@ -1,0 +1,547 @@
+---
+- name: ERROR EXPECTED Ensure the scan is scheduled (wrong hour)
+  herve4m.rhacs_configuration.rhacs_compliance_schedule:
+    name: weekly-scan
+    description: Weekly compliance scan
+    profiles:
+      - ocp4-cis
+      - ocp4-cis-node
+    interval: WEEKLY
+    week_days:
+      - Monday
+    hour: 42
+    minute: 42
+    email_notifiers:
+      - notifier: email notifications
+        to:
+          - security@example.com
+          - secteam@example.com
+        subject: RHACS compliance scan report
+    clusters:
+      - production
+      - infra
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (wrong hour)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong hour)
+
+- name: ERROR EXPECTED Ensure the scan is scheduled (wrong min)
+  herve4m.rhacs_configuration.rhacs_compliance_schedule:
+    name: weekly-scan
+    description: Weekly compliance scan
+    profiles:
+      - ocp4-cis
+      - ocp4-cis-node
+    interval: WEEKLY
+    week_days:
+      - Monday
+    hour: 12
+    minute: 62
+    email_notifiers:
+      - notifier: email notifications
+        to:
+          - security@example.com
+          - secteam@example.com
+        subject: RHACS compliance scan report
+    clusters:
+      - production
+      - infra
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (wrong minute)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong minute)
+
+- name: ERROR EXPECTED Ensure the scan is scheduled (wrong month day)
+  herve4m.rhacs_configuration.rhacs_compliance_schedule:
+    name: weekly-scan
+    description: Weekly compliance scan
+    profiles:
+      - ocp4-cis
+      - ocp4-cis-node
+    interval: MONTHLY
+    month_days:
+      - 1
+      - 15
+      - 32
+    hour: 12
+    minute: 42
+    email_notifiers:
+      - notifier: email notifications
+        to:
+          - security@example.com
+          - secteam@example.com
+        subject: RHACS compliance scan report
+    clusters:
+      - production
+      - infra
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (wrong month day)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong month day)
+
+- name: ERROR EXPECTED Ensure the scan is scheduled (unknown cluster)
+  herve4m.rhacs_configuration.rhacs_compliance_schedule:
+    name: weekly-scan
+    description: Weekly compliance scan
+    profiles:
+      - ocp4-cis
+      - ocp4-cis-node
+    interval: WEEKLY
+    week_days:
+      - Monday
+    hour: 12
+    minute: 42
+    email_notifiers:
+      - notifier: email notifications
+        to:
+          - security@example.com
+          - secteam@example.com
+        subject: RHACS compliance scan report
+    clusters:
+      - not such cluster
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (unknown cluster)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (unknown cluster)
+
+- name: ERROR EXPECTED Ensure the scan is scheduled (unknown notifier)
+  herve4m.rhacs_configuration.rhacs_compliance_schedule:
+    name: weekly-scan
+    description: Weekly compliance scan
+    profiles:
+      - ocp4-cis
+      - ocp4-cis-node
+    interval: WEEKLY
+    week_days:
+      - Monday
+    hour: 12
+    minute: 42
+    email_notifiers:
+      - notifier: email notifications
+        to:
+          - security@example.com
+          - secteam@example.com
+        subject: RHACS compliance scan report
+    clusters:
+      - production
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (unknown notifier)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (unknown notifier)
+
+- name: Ensure the Google Cloud SCC notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible google conf 100
+    type: google
+    google:
+      source_id: organizations/4242/sources/4242
+      use_workload_id: false
+      service_account_key: "{{ lookup('ansible.builtin.file',
+        'gcs_sa_key.json') }}"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: ERROR EXPECTED Ensure the scan is scheduled (wrong notifier type)
+  herve4m.rhacs_configuration.rhacs_compliance_schedule:
+    name: weekly-scan
+    description: Weekly compliance scan
+    profiles:
+      - ocp4-cis
+      - ocp4-cis-node
+    interval: WEEKLY
+    week_days:
+      - Monday
+    hour: 12
+    minute: 42
+    email_notifiers:
+      - notifier: "{{ result['id'] }}"
+        to:
+          - security@example.com
+          - secteam@example.com
+        subject: RHACS compliance scan report
+    clusters:
+      - production
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (wrong notifier type)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong notifier type)
+
+- name: Ensure the Google Cloud SCC notification method is removed
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible google conf 100
+    type: google
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+
+- name: Ensure the email notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible email conf 100
+    type: email
+    email:
+      username: rhacsint
+      password: vs9mrD55NP
+      server: smtp.example.com:465
+      from_header: Security Alerts
+      sender: rhacs@example.com
+      recipient: security@example.com
+      validate_certs: false
+      starttls: LOGIN
+      unauthenticated: false
+      annotation_key: email
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+
+- name: ERROR EXPECTED Ensure the scan is scheduled (unknown profile)
+  herve4m.rhacs_configuration.rhacs_compliance_schedule:
+    name: weekly-scan
+    description: Weekly compliance scan
+    profiles:
+      - ocp4-cis
+      - foobar
+    interval: WEEKLY
+    week_days:
+      - Monday
+    hour: 12
+    minute: 42
+    email_notifiers:
+      - notifier: ansible email conf 100
+        to:
+          - security@example.com
+          - secteam@example.com
+        subject: RHACS compliance scan report
+    clusters:
+      - production
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (unknown profile)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (unknown profile)
+
+- name: ERROR EXPECTED Ensure the scan is scheduled (missing parameters)
+  herve4m.rhacs_configuration.rhacs_compliance_schedule:
+    name: weekly-scan
+    description: Weekly compliance scan
+    interval: WEEKLY
+    week_days:
+      - Monday
+    hour: 12
+    minute: 42
+    email_notifiers:
+      - notifier: ansible email conf 100
+        to:
+          - security@example.com
+          - secteam@example.com
+        subject: RHACS compliance scan report
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing profiles and clusters)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing parameters)
+
+# Cannot test further in the integration environment because there is no
+# cluster, the compliance operator is not installed, and no compliance
+# profiles are available.
+- name: Test compliance schedule configuration
+  when: false
+  block:
+    - name: Ensure the weekly scan is scheduled
+      herve4m.rhacs_configuration.rhacs_compliance_schedule:
+        name: weekly-scan
+        description: Weekly compliance scan
+        profiles:
+          - ocp4-cis
+        interval: WEEKLY
+        week_days:
+          - Monday
+        hour: 4
+        minute: 42
+        email_notifiers:
+          - notifier: ansible email conf 100
+            subject: Questo è l'oggetto della mail
+            body: "Hi,\nQuesto è un corpo di email di esempio.\n"
+            to:
+              - security@example.com
+              - secteam@example.com
+        clusters:
+          - production
+        skip_validate_certs: true
+        rhacs_host: "{{ rhacs_host }}"
+        rhacs_token: "{{ rhacs_token }}"
+      register: result
+
+    - name: Ensure that the task did change something
+      ansible.builtin.assert:
+        that: result['changed']
+        fail_msg: The preceding task should have changed something
+
+    - name: Ensure the weekly scan is scheduled (no change) 1
+      herve4m.rhacs_configuration.rhacs_compliance_schedule:
+        name: weekly-scan
+        new_name: weekly-scan
+        description: Weekly compliance scan
+        profiles:
+          - ocp4-cis
+        append_profiles: false
+        interval: WEEKLY
+        week_days:
+          - Monday
+        hour: 4
+        minute: 42
+        email_notifiers:
+          - notifier: ansible email conf 100
+            to:
+              - security@example.com
+              - secteam@example.com
+            subject: Questo è l'oggetto della mail
+            body: "Hi,\nQuesto è un corpo di email di esempio.\n"
+        clusters:
+          - production
+        append_clusters: true
+        skip_validate_certs: true
+        rhacs_host: "{{ rhacs_host }}"
+        rhacs_token: "{{ rhacs_token }}"
+      register: result
+
+    - name: Ensure that the task did not change anything
+      ansible.builtin.assert:
+        that: not result['changed']
+        fail_msg: The preceding task should not have changed anything
+
+    - name: Ensure the weekly scan is scheduled (no change) 2
+      herve4m.rhacs_configuration.rhacs_compliance_schedule:
+        name: does-not-exist
+        new_name: weekly-scan
+        skip_validate_certs: true
+        rhacs_host: "{{ rhacs_host }}"
+        rhacs_token: "{{ rhacs_token }}"
+      register: result
+
+    - name: Ensure that the task did not change anything
+      ansible.builtin.assert:
+        that: not result['changed']
+        fail_msg: The preceding task should not have changed anything
+
+    - name: Ensure the monthly scan is scheduled
+      herve4m.rhacs_configuration.rhacs_compliance_schedule:
+        name: monthly-scan
+        profiles:
+          - ocp4-cis-node
+        interval: MONTHLY
+        month_days:
+          - 1
+          - 15
+          - 25
+        email_notifiers:
+          - notifier: ansible email conf 100
+        clusters:
+          - production
+        skip_validate_certs: true
+        rhacs_host: "{{ rhacs_host }}"
+        rhacs_token: "{{ rhacs_token }}"
+      register: result
+
+    - name: Ensure that the task did change something
+      ansible.builtin.assert:
+        that: result['changed']
+        fail_msg: The preceding task should have changed something
+
+    - name: ERROR EXPECTED Ensure the monthly scan is renamed (dest exists)
+      herve4m.rhacs_configuration.rhacs_compliance_schedule:
+        name: monthly-scan
+        new_name: weekly-scan
+        profiles:
+          - ocp4-cis-node
+        month_days:
+          - 1
+          - 15
+        email_notifiers:
+          - notifier: ansible email conf 100
+        clusters:
+          - production
+        state: present
+        skip_validate_certs: true
+        rhacs_host: "{{ rhacs_host }}"
+        rhacs_token: "{{ rhacs_token }}"
+      ignore_errors: true
+      register: result
+
+    - name: Ensure that the task failed (destination exists)
+      ansible.builtin.assert:
+        that: result['failed']
+        fail_msg: The preceding task should have failed (dest exists)
+
+    - name: Ensure the monthly scan is removed
+      herve4m.rhacs_configuration.rhacs_compliance_schedule:
+        name: monthly-scan
+        profiles:
+          - ocp4-cis-node
+        interval: MONTHLY
+        month_days:
+          - 26
+        email_notifiers:
+          - notifier: ansible email conf 100
+        clusters:
+          - production
+        state: absent
+        skip_validate_certs: true
+        rhacs_host: "{{ rhacs_host }}"
+        rhacs_token: "{{ rhacs_token }}"
+      register: result
+
+    - name: Ensure that the task did change something
+      ansible.builtin.assert:
+        that: result['changed']
+        fail_msg: The preceding task should have changed something
+
+    - name: Ensure the weekly scan is updated 1
+      herve4m.rhacs_configuration.rhacs_compliance_schedule:
+        name: weekly-scan
+        description: Weekly compliance scan 2
+        profiles:
+          - ocp4-cis-node
+        append_profiles: true
+        week_days:
+          - Monday
+          - Tuesday
+        hour: 5
+        minute: 55
+        email_notifiers:
+          - notifier: ansible email conf 100
+            subject: Tárgysor
+            body: ""
+            to: []
+        clusters: []
+        skip_validate_certs: true
+        rhacs_host: "{{ rhacs_host }}"
+        rhacs_token: "{{ rhacs_token }}"
+      register: result
+
+    - name: Ensure that the task did change something
+      ansible.builtin.assert:
+        that: result['changed']
+        fail_msg: The preceding task should have changed something
+
+    - name: Ensure the weekly scan is updated 2
+      herve4m.rhacs_configuration.rhacs_compliance_schedule:
+        name: weekly-scan
+        new_name: weekly-scan
+        profiles:
+          - ocp4-cis-node
+        append_profiles: false
+        interval: MONTHLY
+        hour: 4
+        email_notifiers: []
+        clusters:
+          - production
+        append_clusters: false
+        skip_validate_certs: true
+        rhacs_host: "{{ rhacs_host }}"
+        rhacs_token: "{{ rhacs_token }}"
+      register: result
+
+    - name: Ensure that the task did change something
+      ansible.builtin.assert:
+        that: result['changed']
+        fail_msg: The preceding task should have changed something
+
+    - name: Ensure the weekly scan is updated 3
+      herve4m.rhacs_configuration.rhacs_compliance_schedule:
+        name: weekly-scan
+        new_name: weekly-scan
+        interval: DAILY
+        minute: 33
+        skip_validate_certs: true
+        rhacs_host: "{{ rhacs_host }}"
+        rhacs_token: "{{ rhacs_token }}"
+      register: result
+
+    - name: Ensure that the task did change something
+      ansible.builtin.assert:
+        that: result['changed']
+        fail_msg: The preceding task should have changed something
+
+    - name: Ensure the weekly scan is removed
+      herve4m.rhacs_configuration.rhacs_compliance_schedule:
+        name: weekly-scan
+        state: absent
+        skip_validate_certs: true
+        rhacs_host: "{{ rhacs_host }}"
+        rhacs_token: "{{ rhacs_token }}"
+      register: result
+
+    - name: Ensure that the task did change something
+      ansible.builtin.assert:
+        that: result['changed']
+        fail_msg: The preceding task should have changed something
+
+- name: Ensure the email notification method is removed
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible email conf 100
+    type: email
+    email:
+      username: rhacsint
+      password: vs9mrD55NP
+      server: smtp.example.com:465
+      from_header: Security Alerts
+      sender: rhacs@example.com
+      recipient: security@example.com
+      validate_certs: false
+      starttls: LOGIN
+      unauthenticated: false
+      annotation_key: email
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+...

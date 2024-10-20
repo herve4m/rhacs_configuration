@@ -714,7 +714,7 @@ class APIModule(AnsibleModule):
 
         return response.get("json", {})
 
-    def get_item_from_resource_list(self, name_or_id, resource_list):
+    def get_item_from_resource_list(self, name_or_id, resource_list, name_attribute="name"):
         """Retrieve an RHACS object from a list or objects.
 
         :param name_or_id: Name or ID of the object to retrieve.
@@ -722,6 +722,9 @@ class APIModule(AnsibleModule):
         :param resource_list: List of objects. Each object is a dictionary and
                               must have the ``name`` and ``id`` keys.
         :type resource_list: list
+        :param name_attribute: The attribute in the list that contains the
+                               object name.
+        :type name_attribute: str
 
         :return: The object or None if the object is not found.
         :rtype: dict
@@ -729,7 +732,7 @@ class APIModule(AnsibleModule):
         if not name_or_id or not resource_list:
             return None
         for res in resource_list:
-            if name_or_id == res.get("name") or name_or_id == res.get("id"):
+            if name_or_id == res.get(name_attribute) or name_or_id == res.get("id"):
                 return res
         return None
 
