@@ -510,7 +510,7 @@ def main():
     if week_days:
         wdays = set([WEEK_DAYS.index(d) for d in week_days])
     else:
-        wdays = set([WEEK_DAYS[0]])
+        wdays = set([0])
 
     if month_days:
         mdays = set()
