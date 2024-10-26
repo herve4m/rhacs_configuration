@@ -504,11 +504,9 @@ def main():
                 )
             id = obj.get("id")
             notifier_name = obj.get("name")
-            subject = n.get("subject", "")
-            body = n.get("body", "")
-            dest = n.get("to")
-            if not dest:
-                dest = [obj.get("labelDefault", "")]
+            subject = n.get("subject") or ""
+            body = n.get("body") or ""
+            dest = n.get("to") or [obj.get("labelDefault", "")]
             notifiers.append(
                 {
                     "emailConfig": {

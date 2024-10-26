@@ -180,7 +180,7 @@ notes:
     you should choose a unique name for each configuration.
   - When several configurations have the same name, the module only considers
     the first configuration returned by the API for update operations.
-  - Also, the modules deletes all the configurations matching both the O(name)
+  - Also, the module deletes all the configurations matching both the O(name)
     and O(type) parameters for delete operations.
 attributes:
   check_mode:

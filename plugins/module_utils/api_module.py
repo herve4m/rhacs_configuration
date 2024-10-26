@@ -998,3 +998,117 @@ class APIModule(AnsibleModule):
             self.get_notifiers(),
             error_msg="the notifier method (in `notifiers') does not exist",
         )
+
+    def get_collections(self):
+        """Retrieve the list of the deployment collections.
+
+        :return: The list of deployment collection objects
+        :rtype: list
+        """
+        try:
+            return self.collections
+        except AttributeError:
+            # Retrieve the existing deployment collections
+            #
+            # GET /v1/collections
+            # {
+            #     "collections": [
+            #         {
+            #             "id": "7e4a265e-2d5a-4ff4-81a8-e426b102dbae",
+            #             "name": "My collection",
+            #             "description": "My description",
+            #             "createdAt": "2024-10-03T14:07:18.562326152Z",
+            #             "lastUpdated": "2024-10-03T14:07:18.562326152Z",
+            #             "createdBy": {
+            #                 "id": "sso:4df1...b62d:admin",
+            #                 "name": "admin"
+            #             },
+            #             "updatedBy": {
+            #                 "id": "sso:4df1...b62d:admin",
+            #                 "name": "admin"
+            #             },
+            #             "resourceSelectors": [
+            #                 {
+            #                     "rules": [
+            #                         {
+            #                             "fieldName": "Namespace Label",
+            #                             "operator": "OR",
+            #                             "values": [
+            #                                 {
+            #                                     "value": "team=payment",
+            #                                     "matchType": "EXACT"
+            #                                 },
+            #                                 {
+            #                                     "value": "foo=bar",
+            #                                     "matchType": "EXACT"
+            #                                 }
+            #                             ]
+            #                         },
+            #                         {
+            #                             "fieldName": "Namespace Label",
+            #                             "operator": "OR",
+            #                             "values": [
+            #                                 {
+            #                                     "value": "toto=titi",
+            #                                     "matchType": "EXACT"
+            #                                 }
+            #                             ]
+            #                         },
+            #                         {
+            #                             "fieldName": "Deployment",
+            #                             "operator": "OR",
+            #                             "values": [
+            #                                 {
+            #                                     "value": "nginx-deployment",
+            #                                     "matchType": "EXACT"
+            #                                 },
+            #                                 {
+            #                                     "value": "^nginx-deployment$",
+            #                                     "matchType": "REGEX"
+            #                                 }
+            #                             ]
+            #                         }
+            #                     ]
+            #                 }
+            #             ],
+            #             "embeddedCollections": [
+            #                 {
+            #                     "id": "a7e188bb-f4f5-4023-a91f-4d4585809d17"
+            #                 }
+            #             ]
+            #         },
+            #         ...
+            #     ]
+            # }
+            c = self.get_object_path(
+                "/v1/collections", query_params={"query.pagination.limit": 10000}
+            )
+            self.collections = c.get("collections", [])
+            return self.collections
+
+    def get_collection(self, name_or_id):
+        """Retrieve a deployment collection object.
+
+        :param name_or_id: Name or ID of the collection to retrieve.
+        :type name_or_id: str
+
+        :return: The collection object or None if the collection is not found.
+        :rtype: dict
+        """
+        return self.get_item_from_resource_list(name_or_id, self.get_collections())
+
+    def get_collection_id(self, name_or_id):
+        """Return the ID of a deployment collection.
+
+        :param name_or_id: Name or ID of the collection to retrieve.
+        :type name_or_id: str
+
+        :return: The deployment collection ID. If the collection is not found,
+                 then the module exists in error.
+        :rtype: str
+        """
+        return self.get_id_from_resource_list(
+            name_or_id,
+            self.get_collections(),
+            error_msg="the deployment collection (in `collection') does not exist",
+        )
