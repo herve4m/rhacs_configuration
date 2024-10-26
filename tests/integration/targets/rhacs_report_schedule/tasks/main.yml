@@ -357,6 +357,63 @@
     that: result['failed']
     fail_msg: The preceding task should have failed (missing parameter)
 
+- name: ERROR EXPECTED Ensure the report is scheduled 1 (missing notifier)
+  herve4m.rhacs_configuration.rhacs_report_schedule:
+    name: Weekly report 1
+    description: Weekly report
+    fixability: FIXABLE
+    severities:
+      - IMPORTANT
+      - CRITICAL
+    image_types:
+      - DEPLOYED
+    collection: "{{ collection['id'] }}"
+    since: LAST_SENT
+    interval: WEEKLY
+    week_days:
+      - Saturday
+      - Sunday
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing notifier)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing notifier)
+
+- name: ERROR EXPECTED Ensure the report is scheduled 1 (missing schedule)
+  herve4m.rhacs_configuration.rhacs_report_schedule:
+    name: Weekly report 1
+    description: Weekly report
+    fixability: FIXABLE
+    severities:
+      - IMPORTANT
+      - CRITICAL
+    image_types:
+      - DEPLOYED
+    collection: "{{ collection['id'] }}"
+    since: LAST_SENT
+    interval: UNSET
+    email_notifiers:
+      - notifier: ansible email conf 200
+        to:
+          - security@example.com
+          - secteam@example.com
+        subject: RHACS report report
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing schedule)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing schedule)
+
 - name: Ensure the report is scheduled 1
   herve4m.rhacs_configuration.rhacs_report_schedule:
     name: Weekly report 1
@@ -476,9 +533,10 @@
     that: not result['changed']
     fail_msg: The preceding task should not have changed anything
 
-- name: Ensure the report schedule 1 is updated
+- name: Ensure the report schedule 1 is updated 1
   herve4m.rhacs_configuration.rhacs_report_schedule:
-    name: Weekly report 1
+    name: does not exist
+    new_name: Weekly report 1
     description: Weekly report update 1
     fixability: NOT_FIXABLE
     severities:
@@ -511,6 +569,66 @@
     that: result['changed']
     fail_msg: The preceding task should have changed something
 
+- name: Ensure the report schedule 1 is updated 2
+  herve4m.rhacs_configuration.rhacs_report_schedule:
+    name: Weekly report 1
+    description: Weekly report update 1
+    fixability: NOT_FIXABLE
+    severities:
+      - IMPORTANT
+      - CRITICAL
+      - MODERATE
+    image_types:
+      - WATCHED
+    collection: Collection 100
+    since: LAST_SENT
+    date: "2024-06-01"
+    interval: WEEKLY
+    email_notifiers:
+      - notifier: ansible email conf 200
+        to: []
+        subject: RHACS report update 1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the report schedule 1 is updated 3
+  herve4m.rhacs_configuration.rhacs_report_schedule:
+    name: Weekly report 1
+    description: Weekly report update 1
+    fixability: NOT_FIXABLE
+    severities:
+      - IMPORTANT
+      - CRITICAL
+      - MODERATE
+    image_types:
+      - WATCHED
+    collection: Collection 100
+    since: DATE
+    date: "2024-06-01"
+    interval: WEEKLY
+    email_notifiers:
+      - notifier: ansible email conf 200
+        to: []
+        subject: RHACS report update 1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
 - name: Ensure the report is scheduled 2
   herve4m.rhacs_configuration.rhacs_report_schedule:
     name: Weekly report 2
@@ -526,6 +644,29 @@
     fail_msg: The preceding task should have changed something
 
 # Rename and update
+- name: ERROR EXPECTED Ensure the report 2 is renamed to 1 (existing new_name)
+  herve4m.rhacs_configuration.rhacs_report_schedule:
+    name: Weekly report 2
+    new_name: Weekly report 1
+    interval: MONTHLY
+    month_days:
+      - 1
+      - 15
+    hour: 14
+    minute: 30
+    email_notifiers:
+      - notifier: ansible email conf 200
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (existing new_name)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (existing new_name)
+
 - name: Ensure the report is renamed 3
   herve4m.rhacs_configuration.rhacs_report_schedule:
     name: Weekly report 2
