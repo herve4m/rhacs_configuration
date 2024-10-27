@@ -37,8 +37,8 @@ options:
     elements: str
   ignore_missing:
     description:
-      - ignore_missing the notifiers association even if some of the policies
-        listed in the O(policies) parameter do not exist.
+      - Whether to skip the security policies that do not exist in the
+        O(policies) parameter.
       - If O(ignore_missing=true), then the module associates the notifiers to
         the existing policies, and ignore the policies that do not exist.
       - If O(ignore_missing=false) and some policies do not exist, then the

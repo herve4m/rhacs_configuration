@@ -542,7 +542,7 @@
     type: splunk
     splunk:
       url: https://splunk.example.com:8088/services/collector/event
-      token: B5A79AAD-D822-46CC-80D1-819F80D7BFB0
+      token: B5A79AAD-D822-46CC-80D1-819F80D7BFB0 # notsecret
       validate_certs: false
       truncate: 5000
       audit_logging: true
@@ -1260,7 +1260,7 @@
     type: splunk
     splunk:
       url: https://splunk.example.com:8088/services/collector/event
-      token: B5A79AAD-D822-46CC-80D1-819F80D7BFB0
+      token: B5A79AAD-D822-46CC-80D1-819F80D7BFB0 # notsecret
       validate_certs: false
       truncate: 5000
       audit_logging: true

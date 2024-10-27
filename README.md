@@ -25,6 +25,7 @@ Name | Description
 `rhacs_auth_provider`             | Manage authentication providers
 `rhacs_cloud_management_platform` | Manage RHACS integration with cloud platforms
 `rhacs_collection`                | Manage deployment collections
+`rhacs_compliance_schedule`       | Manage compliance schedule configurations
 `rhacs_config`                    | Manage RHACS configuration
 `rhacs_delegated_image_scan`      | Manage delegated image scanning configuration
 `rhacs_exception`                 | Configure vulnerability exception expiration periods
@@ -41,6 +42,7 @@ Name | Description
 `rhacs_policy_import`             | Import security policies
 `rhacs_policy_notifier`           | Associate notifiers to policies
 `rhacs_policy_status`             | Enable or disable policies
+`rhacs_report_schedule`           | Manage vulnerability reporting schedules
 `rhacs_role`                      | Manage roles
 `rhacs_signature`                 | Manage RHACS integrations with Cosign signatures
 

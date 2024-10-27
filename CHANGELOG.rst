@@ -4,6 +4,15 @@ Red Hat Advanced Cluster Security for Kubernetes Collection Release Notes
 
 .. contents:: Topics
 
+v1.1.0
+======
+
+New Modules
+-----------
+
+- herve4m.rhacs_configuration.rhacs_compliance_schedule - Manage compliance schedule configurations.
+- herve4m.rhacs_configuration.rhacs_report_schedule - Manage vulnerability reporting schedules.
+
 v1.0.0
 ======
 

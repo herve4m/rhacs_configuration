@@ -714,7 +714,7 @@ class APIModule(AnsibleModule):
 
         return response.get("json", {})
 
-    def get_item_from_resource_list(self, name_or_id, resource_list):
+    def get_item_from_resource_list(self, name_or_id, resource_list, name_attribute="name"):
         """Retrieve an RHACS object from a list or objects.
 
         :param name_or_id: Name or ID of the object to retrieve.
@@ -722,6 +722,9 @@ class APIModule(AnsibleModule):
         :param resource_list: List of objects. Each object is a dictionary and
                               must have the ``name`` and ``id`` keys.
         :type resource_list: list
+        :param name_attribute: The attribute in the list that contains the
+                               object name.
+        :type name_attribute: str
 
         :return: The object or None if the object is not found.
         :rtype: dict
@@ -729,7 +732,7 @@ class APIModule(AnsibleModule):
         if not name_or_id or not resource_list:
             return None
         for res in resource_list:
-            if name_or_id == res.get("name") or name_or_id == res.get("id"):
+            if name_or_id == res.get(name_attribute) or name_or_id == res.get("id"):
                 return res
         return None
 
@@ -994,4 +997,118 @@ class APIModule(AnsibleModule):
             name_or_id,
             self.get_notifiers(),
             error_msg="the notifier method (in `notifiers') does not exist",
+        )
+
+    def get_collections(self):
+        """Retrieve the list of the deployment collections.
+
+        :return: The list of deployment collection objects
+        :rtype: list
+        """
+        try:
+            return self.collections
+        except AttributeError:
+            # Retrieve the existing deployment collections
+            #
+            # GET /v1/collections
+            # {
+            #     "collections": [
+            #         {
+            #             "id": "7e4a265e-2d5a-4ff4-81a8-e426b102dbae",
+            #             "name": "My collection",
+            #             "description": "My description",
+            #             "createdAt": "2024-10-03T14:07:18.562326152Z",
+            #             "lastUpdated": "2024-10-03T14:07:18.562326152Z",
+            #             "createdBy": {
+            #                 "id": "sso:4df1...b62d:admin",
+            #                 "name": "admin"
+            #             },
+            #             "updatedBy": {
+            #                 "id": "sso:4df1...b62d:admin",
+            #                 "name": "admin"
+            #             },
+            #             "resourceSelectors": [
+            #                 {
+            #                     "rules": [
+            #                         {
+            #                             "fieldName": "Namespace Label",
+            #                             "operator": "OR",
+            #                             "values": [
+            #                                 {
+            #                                     "value": "team=payment",
+            #                                     "matchType": "EXACT"
+            #                                 },
+            #                                 {
+            #                                     "value": "foo=bar",
+            #                                     "matchType": "EXACT"
+            #                                 }
+            #                             ]
+            #                         },
+            #                         {
+            #                             "fieldName": "Namespace Label",
+            #                             "operator": "OR",
+            #                             "values": [
+            #                                 {
+            #                                     "value": "toto=titi",
+            #                                     "matchType": "EXACT"
+            #                                 }
+            #                             ]
+            #                         },
+            #                         {
+            #                             "fieldName": "Deployment",
+            #                             "operator": "OR",
+            #                             "values": [
+            #                                 {
+            #                                     "value": "nginx-deployment",
+            #                                     "matchType": "EXACT"
+            #                                 },
+            #                                 {
+            #                                     "value": "^nginx-deployment$",
+            #                                     "matchType": "REGEX"
+            #                                 }
+            #                             ]
+            #                         }
+            #                     ]
+            #                 }
+            #             ],
+            #             "embeddedCollections": [
+            #                 {
+            #                     "id": "a7e188bb-f4f5-4023-a91f-4d4585809d17"
+            #                 }
+            #             ]
+            #         },
+            #         ...
+            #     ]
+            # }
+            c = self.get_object_path(
+                "/v1/collections", query_params={"query.pagination.limit": 10000}
+            )
+            self.collections = c.get("collections", [])
+            return self.collections
+
+    def get_collection(self, name_or_id):
+        """Retrieve a deployment collection object.
+
+        :param name_or_id: Name or ID of the collection to retrieve.
+        :type name_or_id: str
+
+        :return: The collection object or None if the collection is not found.
+        :rtype: dict
+        """
+        return self.get_item_from_resource_list(name_or_id, self.get_collections())
+
+    def get_collection_id(self, name_or_id):
+        """Return the ID of a deployment collection.
+
+        :param name_or_id: Name or ID of the collection to retrieve.
+        :type name_or_id: str
+
+        :return: The deployment collection ID. If the collection is not found,
+                 then the module exists in error.
+        :rtype: str
+        """
+        return self.get_id_from_resource_list(
+            name_or_id,
+            self.get_collections(),
+            error_msg="the deployment collection (in `collection') does not exist",
         )
