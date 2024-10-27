@@ -83,3 +83,12 @@ releases:
         name: rhacs_signature
         namespace: ''
     release_date: '2024-10-17'
+  1.1.0:
+    modules:
+      - description: Manage compliance schedule configurations.
+        name: rhacs_compliance_schedule
+        namespace: ''
+      - description: Manage vulnerability reporting schedules.
+        name: rhacs_report_schedule
+        namespace: ''
+    release_date: '2024-10-27'
