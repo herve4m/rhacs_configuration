@@ -92,3 +92,16 @@ releases:
         name: rhacs_report_schedule
         namespace: ''
     release_date: '2024-10-27'
+  1.1.1:
+    changes:
+      bugfixes:
+        - The ``uiEndpoint`` OpenID Connect parameter was wrongly set and prevented
+          authentication.
+        - Updating a configuration failed because once the authentication provider
+          is used, it cannot be modified. Now, for update operations, the configuration
+          is deleted and then re-created.
+      release_summary: Fixing bugs in the ``herve4m.rhacs_configuration.rhacs_auth_provider``
+        module.
+    fragments:
+      - PR4-v1.1.1-summary.yml
+    release_date: '2024-11-21'

@@ -4,6 +4,20 @@ Red Hat Advanced Cluster Security for Kubernetes Collection Release Notes
 
 .. contents:: Topics
 
+v1.1.1
+======
+
+Release Summary
+---------------
+
+Fixing bugs in the ``herve4m.rhacs_configuration.rhacs_auth_provider`` module.
+
+Bugfixes
+--------
+
+- The ``uiEndpoint`` OpenID Connect parameter was wrongly set and prevented authentication.
+- Updating a configuration failed because once the authentication provider is used, it cannot be modified. Now, for update operations, the configuration is deleted and then re-created.
+
 v1.1.0
 ======
 
