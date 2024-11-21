@@ -54,7 +54,8 @@ options:
   rhacs_url:
     description:
       - URL of the RHACS web interface.
-      - The value of O(rhacs_host) by default.
+      - The network location of O(rhacs_host) by default, such as
+        C(rhacs.example.com:8443) for example.
     type: str
   auth0:
     description:
@@ -552,7 +553,7 @@ def main():
         new_fields = {
             "name": name,
             "type": parameter_to_API_type(auth_type),
-            "uiEndpoint": rhacs_url if rhacs_url else module.host_url.geturl(),
+            "uiEndpoint": rhacs_url if rhacs_url else module.host_url.netloc,
             "enabled": True,
             "traits": {"mutabilityMode": "ALLOW_MUTATE"},
         }
