@@ -805,17 +805,15 @@ def main():
                     "must be set"
                 )
             )
-        if (
-            use_client_secret is None
-            and conf.get("do_not_use_client_secret") in (False, "false")
-            and not client_secret
-        ):
-            module.fail_json(msg="missing required `oidc' argument: client_secret")
 
         if (
             not new_name
             and (not rhacs_url or rhacs_url == data.get("uiEndpoint"))
             and not client_secret
+            and (
+                use_client_secret is None
+                or (use_client_secret is False and not conf.get("client_secret"))
+            )
             and (mode is None or mode == conf.get("mode"))
             and (issuer is None or issuer == conf.get("issuer"))
             and (client_id is None or client_id == conf.get("client_id"))
