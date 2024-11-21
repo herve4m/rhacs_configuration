@@ -513,10 +513,7 @@ def main():
     if state == "absent":
         id = config.get("id", "") if config else ""
         module.delete(
-            config,
-            "authentication provider",
-            name,
-            "/v1/authProviders/{id}".format(id=id),
+            config, "authentication provider", name, "/v1/authProviders/{id}".format(id=id)
         )
 
     if not config and new_config:
@@ -740,8 +737,10 @@ def main():
 
     # Build the data to send to the API to update the configuration
     data = copy.deepcopy(config)
+    data.pop("id", None)
+    data.pop("lastUpdated", None)
+    data.pop("loginUrl", None)
     data["name"] = name
-    data["id"] = id_to_update
     conf = config.get("config", {})
 
     # Compare the object with the requested configuration to verify whether
@@ -806,6 +805,12 @@ def main():
                     "must be set"
                 )
             )
+        if (
+            use_client_secret is None
+            and conf.get("do_not_use_client_secret") in (False, "false")
+            and not client_secret
+        ):
+            module.fail_json(msg="missing required `oidc' argument: client_secret")
 
         if (
             not new_name
@@ -936,13 +941,6 @@ def main():
     if rhacs_url:
         data["uiEndpoint"] = rhacs_url
 
-    module.unconditional_update(
-        "authentication provider",
-        name,
-        "/v1/authProviders/{id}".format(id=id_to_update),
-        data,
-    )
-
     # In case a rename operation occurred (when new_name is set), and the
     # source and destination objects both existed, then delete the source
     # object
@@ -954,7 +952,20 @@ def main():
             "/v1/authProviders/{id}".format(id=id_to_delete),
             auto_exit=False,
         )
-    module.exit_json(changed=True, id=id_to_update)
+
+    # Because a provider cannot be updated after it has been used, delete the
+    # provider and then re-create it.
+    module.delete(
+        config,
+        "authentication provider",
+        name,
+        "/v1/authProviders/{id}".format(id=id_to_update),
+        auto_exit=False,
+    )
+    resp = module.create(
+        "authentication provider", name, "/v1/authProviders", data, auto_exit=False
+    )
+    module.exit_json(changed=True, id=resp.get("id", ""))
 
 
 if __name__ == "__main__":
