@@ -222,11 +222,14 @@ class APIModule(AnsibleModule):
                 response = he
             # Sanity check: Did the server send back some kind of internal error?
             elif he.code >= 500:
-                raise APIModuleError(
-                    ("The host sent back a server error: {path}: {error}.").format(
+                # The response might include an error message
+                try:
+                    msg = self.get_error_message({"json": json.loads(he.read())})
+                except Exception:
+                    msg = ("The host sent back a server error: {path}: {error}.").format(
                         path=url.path, error=he
                     )
-                )
+                raise APIModuleError(msg)
             # Sanity check: Did we fail to authenticate properly?
             # If so, fail out now; this is always a failure.
             elif he.code == 401:
