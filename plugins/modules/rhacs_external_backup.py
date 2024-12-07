@@ -220,7 +220,7 @@ options:
           - When V(path), buckets are addressed as
             C(https://<endpoint_url>/<bucket>).
           - When V(virtual_hosted), buckets are addressed as
-            C(https: //<bucket>.<endpoint_url>).
+            C(https://<bucket>.<endpoint_url>).
           - V(path) by default.
         type: str
         choices: [path, virtual_hosted]
