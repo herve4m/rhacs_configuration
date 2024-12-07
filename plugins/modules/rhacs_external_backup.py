@@ -712,6 +712,9 @@ def main():
                 "accessKeyId": s3compatible["access_key"],
                 "secretAccessKey": s3compatible["secret_key"],
                 "urlStyle": url_style_to_api(s3compatible.get("url_style")),
+                "objectPrefix": (
+                    s3compatible["object_prefix"] if s3compatible.get("object_prefix") else ""
+                ),
             }
 
         resp = module.create(
@@ -818,7 +821,7 @@ def main():
                     )
                     and (
                         s3compatible.get("url_style") is None
-                        or url_style_to_api(s3compatible.get("url_style"))
+                        or url_style_to_api(s3compatible["url_style"])
                         == s3compatible_conf.get("urlStyle")
                     )
                     and s3compatible.get("access_key") is None
@@ -914,22 +917,6 @@ def main():
                 data["updatePassword"] = True
                 new_fields["gcs"]["serviceAccount"] = gcs["service_account_key"]
     else:  # provider_type == "s3compatible"
-        # Both access_key and secret_key must be provided (or none of them)
-        if s3compatible.get("access_key") and not s3compatible.get("secret_key"):
-            module.fail_json(
-                msg=(
-                    "missing required `s3compatible' argument when "
-                    "`access_key' is set: secret_key"
-                )
-            )
-        if s3compatible.get("secret_key") and not s3compatible.get("access_key"):
-            module.fail_json(
-                msg=(
-                    "missing required `s3compatible' argument when "
-                    "`secret_key' is set: access_key"
-                )
-            )
-
         # Remove the "****" value from the secret keys
         new_fields["s3compatible"]["accessKeyId"] = ""
         new_fields["s3compatible"]["secretAccessKey"] = ""
