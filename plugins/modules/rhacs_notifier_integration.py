@@ -583,16 +583,16 @@ options:
       secret:
         description:
           - Authentication secret.
-          - Mutually exclusive with O(client_cert).
-          - One of O(secret) or O(client_cert) is required when creating the
-            notification method.
+          - Mutually exclusive with O(sentinel.client_cert).
+          - One of O(sentinel.secret) or O(sentinel.client_cert) is required
+            when creating the notification method.
         type: str
       client_cert:
         description:
           - Client certificate for authentication.
-          - Mutually exclusive with O(secret).
-          - One of O(client_cert) or O(secret) is required when creating the
-            notification method.
+          - Mutually exclusive with O(sentinel.secret).
+          - One of O(sentinel.client_cert) or O(sentinel.secret) is required
+            when creating the notification method.
         type: dict
         suboptions:
           certificate:
