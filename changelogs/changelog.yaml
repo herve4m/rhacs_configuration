@@ -105,3 +105,14 @@ releases:
     fragments:
       - PR4-v1.1.1-summary.yml
     release_date: '2024-11-21'
+  1.2.1:
+    changes:
+      minor_changes:
+        - Update the ``herve4m.rhacs_configuration.rhacs_external_backup`` module
+          to support S3 compatible storage.
+        - Update the ``herve4m.rhacs_configuration.rhacs_notifier_integration`` module
+          to support Microsoft Sentinel as a notification method.
+      release_summary: Supporting new StackRox 4.6 features.
+    fragments:
+      - 5-v1.2.1-summary.yml
+    release_date: '2024-12-08'
