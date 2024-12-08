@@ -169,12 +169,14 @@ options:
   s3compatible:
     description:
       - Amazon S3 compatible bucket configuration when O(type=s3compatible).
+      - Amazon S3 compatible buckets are only supported with StackRox version
+        4.6 or later.
     type: dict
     suboptions:
       bucket:
         description:
           - Name of the S3 bucket for storing the backups.
-          - Required for new configurations.
+          - The parameter is required when creating the configuration.
         type: str
       object_prefix:
         description:
@@ -187,7 +189,7 @@ options:
             environment variables in decreasing order of preference.
           - If you define the O(s3compatible.access_key) parameter, then you
             must also define the O(s3compatible.secret_key) parameter.
-          - Required for new configurations.
+          - The parameter is required when creating the configuration.
         type: str
         aliases:
           - aws_access_key_id
@@ -199,7 +201,7 @@ options:
             environment variables in decreasing order of preference.
           - If you define the O(s3compatible.secret_key) parameter, then you
             must also define the O(s3compatible.access_key) parameter.
-          - Required for new configurations.
+          - The parameter is required when creating the configuration.
         type: str
         aliases:
           - aws_secret_access_key
@@ -210,7 +212,7 @@ options:
             scheme, then it defaults to https.
           - You can also use the E(AWS_URL) or E(S3_URL)
             environment variables in decreasing order of preference.
-          - Required for new configurations.
+          - The parameter is required when creating the configuration.
         type: str
         aliases:
           - aws_endpoint_url
@@ -229,7 +231,7 @@ options:
           - The Amazon S3 compatible region to use.
           - You can also use the E(AWS_REGION) or E(AWS_DEFAULT_REGION)
             environment variables in decreasing order of preference.
-          - Required for new configurations.
+          - The parameter is required when creating the configuration.
         type: str
         aliases:
           - aws_region

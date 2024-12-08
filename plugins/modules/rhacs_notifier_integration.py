@@ -53,6 +53,7 @@ options:
       - teams
       - aws
       - syslog
+      - sentinel
   rhacs_url:
     description:
       - URL of the RHACS web interface.
@@ -553,6 +554,101 @@ options:
             description: Value to send to syslog.
             type: str
             required: true
+  sentinel:
+    description:
+      - Configuration for the Microsoft Sentinel notification method.
+      - Required when O(type=sentinel).
+      - The Microsoft Sentinel notification method is only supported with
+        StackRox version 4.6 or later.
+    type: dict
+    suboptions:
+      url:
+        description:
+          - Log ingestion endpoint such as
+            C(https://example-sentinel-ou812.eastus-1.ingest.monitor.azure.com).
+          - The parameter is required when creating the notification method.
+        type: str
+      tenant_id:
+        description:
+          - Directory tenant identifier, such as
+            C(1234abce-1234-abcd-1234-abcd1234abcd).
+          - The parameter is required when creating the notification method.
+        type: str
+      client_id:
+        description:
+          - Application client identifier, such as
+            C(abcd1234-abcd-1234-abcd-1234abce1234).
+          - The parameter is required when creating the notification method.
+        type: str
+      secret:
+        description:
+          - Authentication secret.
+          - Mutually exclusive with O(client_cert).
+          - One of O(secret) or O(client_cert) is required when creating the
+            notification method.
+        type: str
+      client_cert:
+        description:
+          - Client certificate for authentication.
+          - Mutually exclusive with O(secret).
+          - One of O(client_cert) or O(secret) is required when creating the
+            notification method.
+        type: dict
+        suboptions:
+          certificate:
+            description:
+              - Client certificate for authenticating with Microsoft Sentinel.
+              - You can use the P(ansible.builtin.file#lookup) lookup plugin
+                to read the file from the system.
+            required: true
+            type: str
+          private_key:
+            description:
+              - Client private key for authenticating with Microsoft Sentinel.
+              - You can use the P(ansible.builtin.file#lookup) lookup plugin
+                to read the file from the system.
+            required: true
+            type: str
+      alert_data_collection_rule:
+        description:
+          - Alert data collection rule configuration.
+        type: dict
+        suboptions:
+          rule_stream_name:
+            description:
+              - Alert data collection rule stream name, such as
+                C(your-custom-sentinel-stream-0123456789).
+            type: str
+          rule_id:
+            description:
+              - Alert data collection rule identifier, such as
+                C(dcr-1234567890abcdef1234567890abcedf).
+            type: str
+          enabled:
+            description:
+              - Whether to enable the alert data collection rule configuration.
+              - V(false) by default.
+            type: bool
+      audit_data_collection_rule:
+        description:
+          - Audit data collection rule configuration.
+        type: dict
+        suboptions:
+          rule_stream_name:
+            description:
+              - Audit data collection rule stream name, such as
+                C(your-custom-sentinel-stream-0123456789).
+            type: str
+          rule_id:
+            description:
+              - Audit data collection rule identifier, such as
+                C(dcr-1234567890abcdef1234567890abcedf).
+            type: str
+          enabled:
+            description:
+              - Whether to enable the audit data collection rule configuration.
+              - V(false) by default.
+            type: bool
   state:
     description:
       - If V(absent), then the module deletes the notification method
@@ -565,6 +661,9 @@ options:
     type: str
     default: present
     choices: [absent, present]
+notes:
+  - The Microsoft Sentinel notification method is only supported with
+    StackRox version 4.6 or later.
 attributes:
   check_mode:
     support: full
@@ -654,6 +753,8 @@ def parameter_to_API_type(notify_type):
         return "awsSecurityHub"
     if notify_type == "google":
         return "cscc"
+    if notify_type == "sentinel":
+        return "microsoftSentinel"
     return notify_type
 
 
@@ -662,6 +763,8 @@ def API_type_to_parameter(notify_type):
         return "aws"
     if notify_type == "cscc":
         return "google"
+    if notify_type == "microsoftSentinel":
+        return "sentinel"
     return notify_type
 
 
@@ -684,6 +787,7 @@ def main():
                 "teams",
                 "aws",
                 "syslog",
+                "sentinel",
             ],
         ),
         rhacs_url=dict(),
@@ -856,6 +960,39 @@ def main():
                 ),
             ),
         ),
+        sentinel=dict(
+            type="dict",
+            options=dict(
+                url=dict(),
+                tenant_id=dict(),
+                client_id=dict(),
+                secret=dict(no_log=True),
+                client_cert=dict(
+                    type="dict",
+                    options=dict(
+                        certificate=dict(required=True),
+                        private_key=dict(required=True, no_log=True),
+                    ),
+                ),
+                alert_data_collection_rule=dict(
+                    type="dict",
+                    options=dict(
+                        rule_stream_name=dict(),
+                        rule_id=dict(),
+                        enabled=dict(type="bool"),
+                    ),
+                ),
+                audit_data_collection_rule=dict(
+                    type="dict",
+                    options=dict(
+                        rule_stream_name=dict(),
+                        rule_id=dict(),
+                        enabled=dict(type="bool"),
+                    ),
+                ),
+            ),
+            mutually_exclusive=[("secret", "client_cert")],
+        ),
         state=dict(choices=["present", "absent"], default="present"),
     )
 
@@ -878,6 +1015,7 @@ def main():
     teams = module.params.get("teams")
     aws = module.params.get("aws")
     syslog = module.params.get("syslog")
+    sentinel = module.params.get("sentinel")
     state = module.params.get("state")
 
     if new_name == name:
@@ -1048,11 +1186,18 @@ def main():
             "conf_name": "aws",
             "update_verb": "PATCH",
         }
-    else:  # notify_type == "generic":
+    elif notify_type == "generic":
         reg_conf = {
             "conf": generic,
             "current_conf": config.get("generic", {}) if config else {},
             "conf_name": "generic",
+            "update_verb": "PATCH",
+        }
+    else:  # notify_type == "sentinel":
+        reg_conf = {
+            "conf": sentinel,
+            "current_conf": config.get("microsoftSentinel", {}) if config else {},
+            "conf_name": "sentinel",
             "update_verb": "PATCH",
         }
     # Create the notifier method configuration
@@ -1412,7 +1557,7 @@ def main():
             new_fields["labelDefault"] = url
             new_fields["labelKey"] = annotation_key if annotation_key else ""
 
-        else:  # reg_conf["conf_name"] == "generic":
+        elif reg_conf["conf_name"] == "generic":
             webhook = reg_conf["conf"].get("webhook")
             audit_logging = reg_conf["conf"].get("audit_logging")
             validate_certs = reg_conf["conf"].get("validate_certs")
@@ -1451,6 +1596,112 @@ def main():
                 new_fields["generic"]["headers"] = [
                     {"key": header["key"], "value": header["value"]} for header in headers
                 ]
+        else:  # reg_conf["conf_name"] == "sentinel":
+            url = reg_conf["conf"].get("url")
+            tenant_id = reg_conf["conf"].get("tenant_id")
+            client_id = reg_conf["conf"].get("client_id")
+            secret = reg_conf["conf"].get("secret")
+            client_cert = reg_conf["conf"].get("client_cert")
+            alert_data_collection_rule = reg_conf["conf"].get("alert_data_collection_rule")
+            audit_data_collection_rule = reg_conf["conf"].get("audit_data_collection_rule")
+
+            missing_args = []
+            if url is None:
+                missing_args.append("url")
+            if tenant_id is None:
+                missing_args.append("tenant_id")
+            if client_id is None:
+                missing_args.append("client_id")
+            if secret is None and client_cert is None:
+                missing_args.append("secret or client_cert")
+            if missing_args:
+                module.fail_json(
+                    msg="missing required `{reg}' arguments: {args}".format(
+                        reg=reg_conf["conf_name"], args=", ".join(missing_args)
+                    )
+                )
+            if client_cert and (
+                not client_cert.get("certificate") or not client_cert.get("private_key")
+            ):
+                module.fail_json(
+                    msg=(
+                        "empty required `{reg}.client_cert' arguments: "
+                        "certificate or private_key"
+                    ).format(reg=reg_conf["conf_name"])
+                )
+            if (
+                alert_data_collection_rule
+                and alert_data_collection_rule.get("enabled")
+                and (
+                    not alert_data_collection_rule.get("rule_stream_name")
+                    or not alert_data_collection_rule.get("rule_id")
+                )
+            ):
+                module.fail_json(
+                    msg=(
+                        "empty required `{reg}.alert_data_collection_rule' arguments: "
+                        "rule_stream_name or rule_id"
+                    ).format(reg=reg_conf["conf_name"])
+                )
+            if (
+                audit_data_collection_rule
+                and audit_data_collection_rule.get("enabled")
+                and (
+                    not audit_data_collection_rule.get("rule_stream_name")
+                    or not audit_data_collection_rule.get("rule_id")
+                )
+            ):
+                module.fail_json(
+                    msg=(
+                        "empty required `{reg}.audit_data_collection_rule' arguments: "
+                        "rule_stream_name or rule_id"
+                    ).format(reg=reg_conf["conf_name"])
+                )
+
+            new_fields["microsoftSentinel"] = {
+                "logIngestionEndpoint": url,
+                "directoryTenantId": tenant_id,
+                "applicationClientId": client_id,
+                "clientCertAuthConfig": {
+                    "clientCert": client_cert.get("certificate", "") if client_cert else "",
+                    "privateKey": client_cert.get("private_key", "") if client_cert else "",
+                },
+                "secret": secret if secret else "",
+                "alertDcrConfig": {
+                    "dataCollectionRuleId": (
+                        alert_data_collection_rule.get("rule_id", "")
+                        if alert_data_collection_rule
+                        else ""
+                    ),
+                    "streamName": (
+                        alert_data_collection_rule.get("rule_stream_name", "")
+                        if alert_data_collection_rule
+                        else ""
+                    ),
+                    "enabled": (
+                        alert_data_collection_rule.get("enabled", False)
+                        if alert_data_collection_rule
+                        else False
+                    ),
+                },
+                "auditLogDcrConfig": {
+                    "dataCollectionRuleId": (
+                        audit_data_collection_rule.get("rule_id", "")
+                        if audit_data_collection_rule
+                        else ""
+                    ),
+                    "streamName": (
+                        audit_data_collection_rule.get("rule_stream_name", "")
+                        if audit_data_collection_rule
+                        else ""
+                    ),
+                    "enabled": (
+                        audit_data_collection_rule.get("enabled", False)
+                        if audit_data_collection_rule
+                        else False
+                    ),
+                },
+            }
 
         resp = module.create(
             "notifier method configuration",
@@ -1935,7 +2186,7 @@ def main():
         if annotation_key is not None:
             data["labelKey"] = annotation_key
 
-    else:  # reg_conf["conf_name"] == "generic":
+    elif reg_conf["conf_name"] == "generic":
         webhook = reg_conf["conf"].get("webhook")
         audit_logging = reg_conf["conf"].get("audit_logging")
         validate_certs = reg_conf["conf"].get("validate_certs")
@@ -2010,6 +2261,120 @@ def main():
             data["generic"]["extraFields"] = [
                 {"key": field["key"], "value": field["value"]} for field in extra_fields
             ]
+    else:  # reg_conf["conf_name"] == "sentinel":
+        url = reg_conf["conf"].get("url")
+        tenant_id = reg_conf["conf"].get("tenant_id")
+        client_id = reg_conf["conf"].get("client_id")
+        secret = reg_conf["conf"].get("secret")
+        client_cert = reg_conf["conf"].get("client_cert")
+        alert_data_collection_rule = reg_conf["conf"].get("alert_data_collection_rule")
+        audit_data_collection_rule = reg_conf["conf"].get("audit_data_collection_rule")
+
+        if (
+            not new_name
+            and not secret
+            and not client_cert
+            and (url is None or url == reg_conf["current_conf"].get("logIngestionEndpoint"))
+            and (
+                tenant_id is None
+                or tenant_id == reg_conf["current_conf"].get("directoryTenantId")
+            )
+            and (
+                client_id is None
+                or client_id == reg_conf["current_conf"].get("applicationClientId")
+            )
+            and (
+                alert_data_collection_rule is None
+                or (
+                    (
+                        alert_data_collection_rule.get("rule_stream_name") is None
+                        or alert_data_collection_rule.get("rule_stream_name")
+                        == reg_conf["current_conf"]
+                        .get("alertDcrConfig", {})
+                        .get("streamName")
+                    )
+                    and (
+                        alert_data_collection_rule.get("rule_id") is None
+                        or alert_data_collection_rule.get("rule_id")
+                        == reg_conf["current_conf"]
+                        .get("alertDcrConfig", {})
+                        .get("dataCollectionRuleId")
+                    )
+                    and (
+                        alert_data_collection_rule.get("enabled") is None
+                        or alert_data_collection_rule.get("enabled")
+                        == reg_conf["current_conf"].get("alertDcrConfig", {}).get("enabled")
+                    )
+                )
+            )
+            and (
+                audit_data_collection_rule is None
+                or (
+                    (
+                        audit_data_collection_rule.get("rule_stream_name") is None
+                        or audit_data_collection_rule.get("rule_stream_name")
+                        == reg_conf["current_conf"]
+                        .get("auditLogDcrConfig", {})
+                        .get("streamName")
+                    )
+                    and (
+                        audit_data_collection_rule.get("rule_id") is None
+                        or audit_data_collection_rule.get("rule_id")
+                        == reg_conf["current_conf"]
+                        .get("auditLogDcrConfig", {})
+                        .get("dataCollectionRuleId")
+                    )
+                    and (
+                        audit_data_collection_rule.get("enabled") is None
+                        or audit_data_collection_rule.get("enabled")
+                        == reg_conf["current_conf"]
+                        .get("auditLogDcrConfig", {})
+                        .get("enabled")
+                    )
+                )
+            )
+        ):
+            module.exit_json(changed=False, id=id_to_update)
+
+        if url is not None:
+            data["microsoftSentinel"]["logIngestionEndpoint"] = url
+        if tenant_id is not None:
+            data["microsoftSentinel"]["directoryTenantId"] = tenant_id
+        if client_id is not None:
+            data["microsoftSentinel"]["applicationClientId"] = client_id
+        if secret:
+            data["microsoftSentinel"]["secret"] = secret
+            data["microsoftSentinel"]["clientCertAuthConfig"] = {
+                "clientCert": "",
+                "privateKey": "",
+            }
+            update_password = True
+        else:
+            data["microsoftSentinel"]["secret"] = ""
+        if client_cert:
+            data["microsoftSentinel"]["clientCertAuthConfig"] = {
+                "clientCert": client_cert.get("certificate", ""),
+                "privateKey": client_cert.get("private_key", ""),
+            }
+            data["microsoftSentinel"]["secret"] = ""
+            update_password = True
+        else:
+            data["microsoftSentinel"]["clientCertAuthConfig"] = {
+                "clientCert": "",
+                "privateKey": "",
+            }
+        if alert_data_collection_rule is not None:
+            data["microsoftSentinel"]["alertDcrConfig"] = {
+                "streamName": alert_data_collection_rule.get("rule_stream_name", ""),
+                "dataCollectionRuleId": alert_data_collection_rule.get("rule_id", ""),
+                "enabled": alert_data_collection_rule.get("enabled", False),
+            }
+        if audit_data_collection_rule is not None:
+            data["microsoftSentinel"]["auditLogDcrConfig"] = {
+                "streamName": audit_data_collection_rule.get("rule_stream_name", ""),
+                "dataCollectionRuleId": audit_data_collection_rule.get("rule_id", ""),
+                "enabled": audit_data_collection_rule.get("enabled", False),
+            }
 
     if rhacs_url:
         data["uiEndpoint"] = rhacs_url
