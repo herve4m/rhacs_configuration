@@ -1477,7 +1477,7 @@
     that: not result['changed']
     fail_msg: The preceding task should not have changed anything
 
-- name: Ensure the API token exists
+- name: Ensure the API token does not exist
   herve4m.rhacs_configuration.rhacs_api_token:
     name: Ansible token
     role: Admin
@@ -1485,4 +1485,247 @@
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
     rhacs_token: "{{ rhacs_token }}"
+
+# Microsoft Sentinel
+- name: ERROR EXPECTED Ensure the Sentinel notification method exists 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sentinel conf 1
+    type: sentinel
+    rhacs_url: "{{ rhacs_host }}/portal"
+    sentinel: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing parameters) 1
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing parameters)
+
+- name: ERROR EXPECTED Ensure the Sentinel notification method exists 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sentinel conf 1
+    type: sentinel
+    rhacs_url: "{{ rhacs_host }}/portal"
+    sentinel:
+      url: https://example-sentinel-ou812.eastus-1.ingest.monitor.azure.com
+      tenant_id: myDirTenantID
+      client_id: myAppClientId
+      client_cert:
+        certificate: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+        private_key: ""
+      alert_data_collection_rule:
+        enabled: true
+        rule_stream_name: alertDataCollectionRuleStreamName
+        rule_id: alertRuleID
+      audit_data_collection_rule:
+        enabled: true
+        rule_stream_name: auditDataCollectionRuleStreamName
+        rule_id: auditRuleID
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing private_key)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing private_key)
+
+- name: ERROR EXPECTED Ensure the Sentinel notification method exists 3
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sentinel conf 1
+    type: sentinel
+    rhacs_url: "{{ rhacs_host }}/portal"
+    sentinel:
+      url: https://example-sentinel-ou812.eastus-1.ingest.monitor.azure.com
+      tenant_id: myDirTenantID
+      client_id: myAppClientId
+      secret: test123
+      alert_data_collection_rule:
+        enabled: true
+        # rule_stream_name: alertDataCollectionRuleStreamName
+        rule_id: alertRuleID
+      audit_data_collection_rule:
+        enabled: true
+        rule_stream_name: auditDataCollectionRuleStreamName
+        rule_id: auditRuleID
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (missing rule_stream_name)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing rule_stream_name)
+
+- name: ERROR EXPECTED Ensure the Sentinel notification method exists 4
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sentinel conf 1
+    type: sentinel
+    rhacs_url: "{{ rhacs_host }}/portal"
+    sentinel:
+      url: https://example-sentinel-ou812.eastus-1.ingest.monitor.azure.com
+      tenant_id: myDirTenantID
+      client_id: myAppClientId
+      secret: test123
+      alert_data_collection_rule:
+        enabled: true
+        rule_stream_name: alertDataCollectionRuleStreamName
+        rule_id: alertRuleID
+      audit_data_collection_rule:
+        enabled: true
+        rule_stream_name: auditDataCollectionRuleStreamName
+        rule_id: ""
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (empty rule_id)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (empty rule_id)
+
+- name: Ensure the Sentinel notification method exists
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sentinel conf 1
+    type: sentinel
+    rhacs_url: "{{ rhacs_host }}/portal"
+    sentinel:
+      url: https://example-sentinel-ou812.eastus-1.ingest.monitor.azure.com
+      tenant_id: myDirTenantID
+      client_id: myAppClientId
+      secret: test123
+      alert_data_collection_rule:
+        enabled: true
+        rule_stream_name: alertDataCollectionRuleStreamName
+        rule_id: alertRuleID
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Sentinel notification method is updated (no change) 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sentinel conf 1
+    type: sentinel
+    rhacs_url: "{{ rhacs_host }}/portal"
+    sentinel:
+      url: https://example-sentinel-ou812.eastus-1.ingest.monitor.azure.com
+      tenant_id: myDirTenantID
+      client_id: myAppClientId
+      alert_data_collection_rule:
+        enabled: true
+        rule_stream_name: alertDataCollectionRuleStreamName
+        rule_id: alertRuleID
+      audit_data_collection_rule:
+        enabled: false
+        rule_id: ""
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Sentinel notification method is updated (no change) 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sentinel conf 1
+    type: sentinel
+    rhacs_url: "{{ rhacs_host }}/portal"
+    sentinel:
+      alert_data_collection_rule:
+        rule_stream_name: alertDataCollectionRuleStreamName
+      audit_data_collection_rule: {}
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Sentinel notification method is updated 1
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sentinel conf 1
+    type: sentinel
+    rhacs_url: "{{ rhacs_host }}/portal"
+    sentinel:
+      url: https://example-sentinel-ou812.eastus-1.ingest.monitor.azure.com
+      tenant_id: myDirTenantID
+      client_id: myAppClientId
+      secret: testABC
+      alert_data_collection_rule:
+        enabled: true
+        rule_stream_name: alertDataCollectionRuleStreamName
+        rule_id: alertRuleID
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Sentinel notification method is updated 2
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sentinel conf 1
+    type: sentinel
+    rhacs_url: "{{ rhacs_host }}/portal"
+    sentinel:
+      url: https://test.eastus-1.ingest.monitor.azure.com
+      tenant_id: myDirTenantID2
+      client_id: myAppClientId2
+      alert_data_collection_rule:
+        enabled: false
+        rule_stream_name: alertDataCollectionRuleStreamName2
+        rule_id: alertRuleID2
+      audit_data_collection_rule:
+        enabled: true
+        rule_stream_name: auditDataCollectionRuleStreamName2
+        rule_id: auditRuleID2
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Sentinel notification method does not exist
+  herve4m.rhacs_configuration.rhacs_notifier_integration:
+    name: ansible sentinel conf 1
+    type: sentinel
+    sentinel: {}
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
 ...

@@ -4,6 +4,20 @@ Red Hat Advanced Cluster Security for Kubernetes Collection Release Notes
 
 .. contents:: Topics
 
+v1.2.1
+======
+
+Release Summary
+---------------
+
+Supporting new StackRox 4.6 features.
+
+Minor Changes
+-------------
+
+- Update the ``herve4m.rhacs_configuration.rhacs_external_backup`` module to support S3 compatible storage.
+- Update the ``herve4m.rhacs_configuration.rhacs_notifier_integration`` module to support Microsoft Sentinel as a notification method.
+
 v1.1.1
 ======
 

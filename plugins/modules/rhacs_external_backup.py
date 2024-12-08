@@ -14,8 +14,8 @@ DOCUMENTATION = r"""
 module: rhacs_external_backup
 short_description: Manage external backup configurations
 description:
-  - Create, delete, and update external backup configurations to Amazon S3 or
-    Google Cloud Storage buckets.
+  - Create, delete, and update external backup configurations to Amazon S3,
+    Google Cloud Storage, or Amazon S3 compatible buckets.
 version_added: '1.0.0'
 author: Hervé Quatremain (@herve4m)
 options:
@@ -32,14 +32,19 @@ options:
     type: str
   type:
     description:
-      - Destination of the backups, Amazon S3 buckets (V(s3)) or Google Cloud
-        Storage buckets (V(gcs)).
+      - Destination of the backups, Amazon S3 buckets (V(s3)), Google Cloud
+        Storage buckets (V(gcs)), or Amazon S3 compatible buckets
+        (V(s3compatible)).
       - For Amazon S3, you provide the configuration in the O(s3) parameter.
       - For Google Cloud Storage, you provide the configuration in the O(gcs)
         parameter.
+      - For Amazon S3 compatible buckets, you provide the configuration in the
+        O(s3compatible) parameter.
+      - Amazon S3 compatible buckets are only supported with StackRox version
+        4.6 or later.
     required: true
     type: str
-    choices: [s3, gcs]
+    choices: [s3, gcs, s3compatible]
   backups_to_retain:
     description:
       - Number of backups to keep.
@@ -161,6 +166,75 @@ options:
             to read the file from the system.
           - Required only when O(gcs.use_workload_id=false).
         type: jsonarg
+  s3compatible:
+    description:
+      - Amazon S3 compatible bucket configuration when O(type=s3compatible).
+      - Amazon S3 compatible buckets are only supported with StackRox version
+        4.6 or later.
+    type: dict
+    suboptions:
+      bucket:
+        description:
+          - Name of the S3 bucket for storing the backups.
+          - The parameter is required when creating the configuration.
+        type: str
+      object_prefix:
+        description:
+          - Optional folder structure in the bucket to store the backups.
+        type: str
+      access_key:
+        description:
+          - Access key ID.
+          - You can also use the E(AWS_ACCESS_KEY_ID) or E(AWS_ACCESS_KEY)
+            environment variables in decreasing order of preference.
+          - If you define the O(s3compatible.access_key) parameter, then you
+            must also define the O(s3compatible.secret_key) parameter.
+          - The parameter is required when creating the configuration.
+        type: str
+        aliases:
+          - aws_access_key_id
+          - aws_access_key
+      secret_key:
+        description:
+          - AWS secret access key.
+          - You can also use the E(AWS_SECRET_ACCESS_KEY) or E(AWS_SECRET_KEY)
+            environment variables in decreasing order of preference.
+          - If you define the O(s3compatible.secret_key) parameter, then you
+            must also define the O(s3compatible.access_key) parameter.
+          - The parameter is required when creating the configuration.
+        type: str
+        aliases:
+          - aws_secret_access_key
+          - aws_secret_key
+      endpoint_url:
+        description:
+          - URL of the Amazon S3 compatible service. If you left out the
+            scheme, then it defaults to https.
+          - You can also use the E(AWS_URL) or E(S3_URL)
+            environment variables in decreasing order of preference.
+          - The parameter is required when creating the configuration.
+        type: str
+        aliases:
+          - aws_endpoint_url
+      url_style:
+        description:
+          - Bucket URL addressing.
+          - When V(path), buckets are addressed as
+            C(https://<endpoint_url>/<bucket>).
+          - When V(virtual_hosted), buckets are addressed as
+            C(https://<bucket>.<endpoint_url>).
+          - V(path) by default.
+        type: str
+        choices: [path, virtual_hosted]
+      region:
+        description:
+          - The Amazon S3 compatible region to use.
+          - You can also use the E(AWS_REGION) or E(AWS_DEFAULT_REGION)
+            environment variables in decreasing order of preference.
+          - The parameter is required when creating the configuration.
+        type: str
+        aliases:
+          - aws_region
   state:
     description:
       - If V(absent), then the module deletes all the configurations that match
@@ -182,6 +256,8 @@ notes:
     the first configuration returned by the API for update operations.
   - Also, the module deletes all the configurations matching both the O(name)
     and O(type) parameters for delete operations.
+  - Amazon S3 compatible (O(type=s3compatible)) requires StackRox version 4.6
+    or later.
 attributes:
   check_mode:
     support: full
@@ -253,6 +329,27 @@ EXAMPLES = r"""
     rhacs_host: central.example.com
     rhacs_username: admin
     rhacs_password: vs9mrD55NP
+
+- name: Ensure the Amazon S3 compatible bucket conf for external backups exists
+  herve4m.rhacs_configuration.rhacs_external_backup:
+    name: daily_S3_compatible_backups
+    type: s3compatible
+    backups_to_retain: 2
+    interval: DAILY
+    hour: 20
+    minute: 30
+    s3compatible:
+      bucket: rhacs-backups
+      object_prefix: central1
+      endpoint_url: s3.pl-waw.scw.cloud
+      access_key: AKIAIOSFODNN7EXAMPLE
+      secret_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      region: pl-waw
+      url_style: virtual_hosted
+    state: present
+    rhacs_host: central.example.com
+    rhacs_username: admin
+    rhacs_password: vs9mrD55NP
 """
 
 RETURN = r"""
@@ -269,11 +366,19 @@ from ansible.module_utils.basic import env_fallback
 from ..module_utils.api_module import APIModule
 
 
+def url_style_to_api(url_style):
+    return (
+        "S3_URL_STYLE_VIRTUAL_HOSTED"
+        if url_style == "virtual_hosted"
+        else "S3_URL_STYLE_PATH"
+    )
+
+
 def main():
 
     argument_spec = dict(
         name=dict(required=True),
-        type=dict(required=True, choices=["s3", "gcs"]),
+        type=dict(required=True, choices=["s3", "gcs", "s3compatible"]),
         backups_to_retain=dict(type="int"),
         interval=dict(choices=["DAILY", "WEEKLY"]),
         hour=dict(type="int"),
@@ -325,6 +430,33 @@ def main():
                 service_account_key=dict(no_log=True, type="jsonarg"),
             ),
         ),
+        s3compatible=dict(
+            type="dict",
+            options=dict(
+                bucket=dict(),
+                object_prefix=dict(),
+                access_key=dict(
+                    aliases=["aws_access_key_id", "aws_access_key"],
+                    fallback=(env_fallback, ["AWS_ACCESS_KEY_ID", "AWS_ACCESS_KEY"]),
+                    no_log=True,
+                ),
+                secret_key=dict(
+                    aliases=["aws_secret_access_key", "aws_secret_key"],
+                    fallback=(env_fallback, ["AWS_SECRET_ACCESS_KEY", "AWS_SECRET_KEY"]),
+                    no_log=True,
+                ),
+                region=dict(
+                    aliases=["aws_region"],
+                    fallback=(env_fallback, ["AWS_REGION", "AWS_DEFAULT_REGION"]),
+                ),
+                endpoint_url=dict(
+                    aliases=["aws_endpoint_url"],
+                    fallback=(env_fallback, ["AWS_URL", "S3_URL"]),
+                ),
+                url_style=dict(choices=["path", "virtual_hosted"]),
+            ),
+            required_together=[("access_key", "secret_key")],
+        ),
         state=dict(choices=["present", "absent"], default="present"),
     )
 
@@ -341,6 +473,7 @@ def main():
     week_day = module.params.get("week_day")
     s3 = module.params.get("s3")
     gcs = module.params.get("gcs")
+    s3compatible = module.params.get("s3compatible")
     state = module.params.get("state")
 
     # Retrieve the existing external backup configurations
@@ -387,6 +520,26 @@ def main():
     #         "objectPrefix": "central1",
     #         "endpoint": ""
     #       }
+    #     },
+    #     {
+    #         "id": "a93a093c-b234-47da-83c8-64e87dd76bf6",
+    #         "name": "daily_S3_compatible_backups",
+    #         "type": "s3compatible",
+    #         "schedule": {
+    #             "intervalType": "DAILY",
+    #             "hour": 20,
+    #             "minute": 30
+    #         },
+    #         "backupsToKeep": 2,
+    #         "s3compatible": {
+    #             "bucket": "rhacs-backups",
+    #             "accessKeyId": "******",
+    #             "secretAccessKey": "******",
+    #             "region": "pl-waw",
+    #             "objectPrefix": "",
+    #             "endpoint": "s3.pl-waw.scw.cloud",
+    #             "urlStyle": "S3_URL_STYLE_VIRTUAL_HOSTED"
+    #         }
     #     }
     #   ]
     # }
@@ -503,7 +656,7 @@ def main():
                 s3_conf["accessKeyId"] = s3["access_key"]
                 s3_conf["secretAccessKey"] = s3["secret_key"]
             new_fields["s3"] = s3_conf
-        else:
+        elif provider_type == "gcs":
             # Verify the GCS parameters
             if not gcs:
                 module.fail_json(msg="type is gcs but the `gcs' parameter is missing")
@@ -530,6 +683,41 @@ def main():
             if gcs.get("use_workload_id") is False:
                 gcs_conf["serviceAccount"] = gcs["service_account_key"]
             new_fields["gcs"] = gcs_conf
+        else:  # provider_type == "s3compatible"
+            # Verify the S3 parameters
+            if not s3compatible:
+                module.fail_json(
+                    msg="type is s3compatible but the `s3compatible' parameter is missing"
+                )
+            missing_args = []
+            if not s3compatible.get("bucket"):
+                missing_args.append("bucket")
+            if not s3compatible.get("region"):
+                missing_args.append("region")
+            if not s3compatible.get("access_key"):
+                missing_args.append("access_key")
+            if not s3compatible.get("secret_key"):
+                missing_args.append("secret_key")
+            if not s3compatible.get("endpoint_url"):
+                missing_args.append("endpoint_url")
+            if missing_args:
+                module.fail_json(
+                    msg="missing required `s3compatible' arguments: {args}".format(
+                        args=", ".join(missing_args)
+                    )
+                )
+            # Build the data structure
+            new_fields["s3compatible"] = {
+                "bucket": s3compatible["bucket"],
+                "region": s3compatible["region"],
+                "endpoint": s3compatible["endpoint_url"],
+                "accessKeyId": s3compatible["access_key"],
+                "secretAccessKey": s3compatible["secret_key"],
+                "urlStyle": url_style_to_api(s3compatible.get("url_style")),
+                "objectPrefix": (
+                    s3compatible["object_prefix"] if s3compatible.get("object_prefix") else ""
+                ),
+            }
 
         resp = module.create(
             "external backup configuration",
@@ -558,7 +746,8 @@ def main():
                 continue
             s3_conf = config.get("s3", {})
             gcs_conf = config.get("gcs", {})
-            # Because the AWS access keys and the GCS service accounts are not
+            s3compatible_conf = config.get("s3compatible", {})
+            # Because the S3 access keys and the GCS service accounts are not
             # returned by the API, the module cannot compare them with the
             # provided parameters. If the user provides those secret parameters,
             # then the module will always perform an update.
@@ -588,7 +777,7 @@ def main():
                     )
                 ):
                     module.exit_json(changed=False, id=config.get("id"))
-            else:
+            elif provider_type == "gcs":
                 if not gcs:
                     module.exit_json(changed=False, id=config.get("id"))
                 if (
@@ -609,6 +798,36 @@ def main():
                             and gcs.get("service_account_key") is None
                         )
                     )
+                ):
+                    module.exit_json(changed=False, id=config.get("id"))
+            else:  # provider_type == "s3compatible"
+                if not s3compatible:
+                    module.exit_json(changed=False, id=config.get("id"))
+                if (
+                    (
+                        s3compatible.get("bucket") is None
+                        or s3compatible["bucket"] == s3compatible_conf.get("bucket")
+                    )
+                    and (
+                        s3compatible.get("region") is None
+                        or s3compatible["region"] == s3compatible_conf.get("region")
+                    )
+                    and (
+                        s3compatible.get("object_prefix") is None
+                        or s3compatible["object_prefix"]
+                        == s3compatible_conf.get("objectPrefix")
+                    )
+                    and (
+                        s3compatible.get("endpoint_url") is None
+                        or s3compatible["endpoint_url"] == s3compatible_conf.get("endpoint")
+                    )
+                    and (
+                        s3compatible.get("url_style") is None
+                        or url_style_to_api(s3compatible["url_style"])
+                        == s3compatible_conf.get("urlStyle")
+                    )
+                    and s3compatible.get("access_key") is None
+                    and s3compatible.get("secret_key") is None
                 ):
                     module.exit_json(changed=False, id=config.get("id"))
 
@@ -666,7 +885,7 @@ def main():
                 data["updatePassword"] = True
                 new_fields["s3"]["accessKeyId"] = s3["access_key"]
                 new_fields["s3"]["secretAccessKey"] = s3["secret_key"]
-    else:
+    elif provider_type == "gcs":
         # Verify that if "use_workload_id" is changed to false, then the user
         # provided the service account
         if (
@@ -699,6 +918,27 @@ def main():
             ):
                 data["updatePassword"] = True
                 new_fields["gcs"]["serviceAccount"] = gcs["service_account_key"]
+    else:  # provider_type == "s3compatible"
+        # Remove the "****" value from the secret keys
+        new_fields["s3compatible"]["accessKeyId"] = ""
+        new_fields["s3compatible"]["secretAccessKey"] = ""
+        if s3compatible:
+            if s3compatible.get("bucket") is not None:
+                new_fields["s3compatible"]["bucket"] = s3compatible["bucket"]
+            if s3compatible.get("region") is not None:
+                new_fields["s3compatible"]["region"] = s3compatible["region"]
+            if s3compatible.get("object_prefix") is not None:
+                new_fields["s3compatible"]["objectPrefix"] = s3compatible["object_prefix"]
+            if s3compatible.get("endpoint_url") is not None:
+                new_fields["s3compatible"]["endpoint"] = s3compatible["endpoint_url"]
+            if s3compatible.get("url_style") is not None:
+                new_fields["s3compatible"]["urlStyle"] = url_style_to_api(
+                    s3compatible["url_style"]
+                )
+            if s3compatible.get("access_key") is not None:
+                data["updatePassword"] = True
+                new_fields["s3compatible"]["accessKeyId"] = s3compatible["access_key"]
+                new_fields["s3compatible"]["secretAccessKey"] = s3compatible["secret_key"]
 
     data["externalBackup"] = new_fields
     id = config.get("id", "")
