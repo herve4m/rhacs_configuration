@@ -39,8 +39,7 @@ options:
       - If V(present), then the module creates the security policy if it does
         not already exist.
       - If the security policy already exists, then the module updates its
-        state, and renames the collection if you provide the
-        O(new_name) parameter.
+        state.
     type: str
     default: present
     choices: [absent, present]
@@ -158,14 +157,9 @@ def are_same(t1, t2):
     All the variables in the ``t1`` structure must be in ``t2``.
     However, variables in ``t2`` not in ``t1`` are ignored.
     """
-    # flake8 E721 "do not compare types"
-    # if type(t1) != type(t2):
-    if not isinstance(t1, type(t2)):
-        return False
-
-    if isinstance(t1, (list, tuple)):
+    if isinstance(t1, (list, tuple)) and isinstance(t2, (list, tuple)):
         return diff_list(t1, t2)
-    if isinstance(t1, dict):
+    if isinstance(t1, dict) and isinstance(t2, dict):
         return diff_dict(t1, t2)
     return t1 == t2
 
@@ -173,7 +167,7 @@ def are_same(t1, t2):
 def main():
 
     argument_spec = dict(
-        policy=dict(required=True, aliases=["src"]),
+        policy=dict(required=True),
         data=dict(type="jsonarg"),
         state=dict(choices=["present", "absent"], default="present"),
     )
