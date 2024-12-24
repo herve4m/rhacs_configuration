@@ -12,10 +12,10 @@ __metaclass__ = type
 DOCUMENTATION = r"""
 ---
 module: rhacs_image_integration
-short_description: Manage image vulnerability scanner and registry integrations
+short_description: Manage image vulnerability scanner and registry integration
 description:
   - Create, delete, and update Red Hat Advanced Cluster Security for Kubernetes
-    (RHACS) integrations with image vulnerability scanners and container
+    (RHACS) integration with image vulnerability scanners and container
     registries.
 version_added: '1.0.0'
 author: Hervé Quatremain (@herve4m)

@@ -20,6 +20,7 @@ action_groups:
     - rhacs_collection
     - rhacs_init_bundle
     - rhacs_delegated_image_scan
+    - rhacs_policy
     - rhacs_policy_status
     - rhacs_policy_notifier
     - rhacs_policy_clone
