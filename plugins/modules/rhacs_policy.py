@@ -26,10 +26,13 @@ options:
     type: str
   data:
     description:
-      - Security policy structure in JSON format.
+      - Security policy structure in JSON or YAML format.
       - You can use the P(ansible.builtin.file#lookup) lookup plugin
         to read the file from the system.
       - Required only when O(state=present).
+      - To get an example, you can export a policy to JSON by using the RHACS
+        portal. Alternatively, you can save the policy as a custom resource in
+        YAML.
     type: jsonarg
   state:
     description:
@@ -129,11 +132,20 @@ id:
   sample: b112af00-8256-43fe-82fd-ecafb62c5bea
 """
 
+from ansible.module_utils.common.yaml import yaml_load
 from ..module_utils.api_module import APIModule
 
 
 def diff_dict(t1, t2):
     for k in t1:
+        if k in (
+            "SORTName",
+            "SORTLifecycleStage",
+            "lastUpdated",
+            "criteriaLocked",
+            "mitreVectorsLocked",
+        ):
+            continue
         if k not in t2 or not are_same(t1[k], t2[k]):
             return False
     return True
@@ -199,7 +211,10 @@ def main():
             policy_obj, "security policy", policy, "/v1/policies/{id}".format(id=id)
         )
 
-    data = module.from_json(data)
+    try:
+        data = module.from_json(data)
+    except Exception:
+        data = yaml_load(data)
     data["id"] = id
 
     # YAML resource files use the "policyName" option for the policy name, but
@@ -214,8 +229,10 @@ def main():
         )
         module.exit_json(changed=True, id=resp.get("id", ""))
 
+    # Retrieve the policy details
+    policy_obj = module.get_object_path("/v1/policies/{id}".format(id=id))
+
     # Verify whether an update is required
-    data.pop("lastUpdated", None)
     if are_same(data, policy_obj):
         module.exit_json(changed=False, id=id)
 
