@@ -32,6 +32,7 @@ Name | Description
 `rhacs_external_backup`           | Manage external backup configurations
 `rhacs_group`                     | Manage roles for authentication providers
 `rhacs_image_integration`         | Manage image vulnerability scanner and registry integration
+`rhacs_image_watch`               | Manage image watches
 `rhacs_init_bundle`               | Manage cluster init bundles
 `rhacs_machine_access`            | Manage machine access configurations
 `rhacs_notifier_integration`      | Manage notification methods

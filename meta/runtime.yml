@@ -9,6 +9,7 @@ action_groups:
     - rhacs_signature
     - rhacs_policy_category
     - rhacs_image_integration
+    - rhacs_image_watch
     - rhacs_notifier_integration
     - rhacs_permission_set
     - rhacs_access_scope

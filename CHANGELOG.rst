@@ -4,6 +4,15 @@ Red Hat Advanced Cluster Security for Kubernetes Collection Release Notes
 
 .. contents:: Topics
 
+v1.3.0
+======
+
+New Modules
+-----------
+
+- herve4m.rhacs_configuration.rhacs_image_watch - Manage image watches.
+- herve4m.rhacs_configuration.rhacs_policy - Manage security policies.
+
 v1.2.1
 ======
 
