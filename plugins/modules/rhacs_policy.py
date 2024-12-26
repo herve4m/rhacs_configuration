@@ -215,12 +215,21 @@ def main():
         data = module.from_json(data)
     except Exception:
         data = yaml_load(data)
-    data["id"] = id
+
+    # Accommodate for the user providing the whole YAML resource file instead
+    # of just the "spec" section
+    if data.get("spec"):
+        data = data.get("spec")
+    # The user provided the whole JSON export. Process only the first item.
+    elif isinstance(data.get("policies"), (list, tuple)):
+        data = data.get("policies")[0]
 
     # YAML resource files use the "policyName" option for the policy name, but
     # the RHACS API use "name"
     if "policyName" in data:
         data["name"] = data.pop("policyName")
+
+    data["id"] = id
 
     # Create the policy
     if not policy_obj:

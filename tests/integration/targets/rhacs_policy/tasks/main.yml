@@ -213,6 +213,129 @@
     that: result['changed']
     fail_msg: The preceding task should have changed something
 
+- name: Ensure the security policy 3 is updated 2
+  herve4m.rhacs_configuration.rhacs_policy:
+    policy: Test pol 3
+    data:
+      name: Test pol 3
+      description: >
+        Alert on deployments with containers with read-write root filesystem
+      rationale: >
+        Containers running with read-write root filesystem represent greater
+        post-exploitation risk by allowing an attacker to modify important
+        files in the container.
+      remediation: >
+        Use a read-only root filesystem, and use volume mounts to allow writes
+        to specific sub-directories depending on your application's needs.
+      disabled: false
+      lifecycleStages:
+        - DEPLOY
+      # changed
+      categories:
+        - Privileges
+      eventSource: NOT_APPLICABLE
+      exclusions:
+        - name: Don't alert on openshift-node namespace
+          deployment:
+            scope:
+              namespace: openshift-node
+        - name: Don't alert on the kube-system namespace
+          deployment:
+            scope:
+              namespace: kube-system
+        - name: Don't alert on istio-system namespace
+          deployment:
+            scope:
+              namespace: istio-system
+        - name: Don't alert on openshift-sdn namespace
+          deployment:
+            scope:
+              namespace: openshift-sdn
+      severity: MEDIUM_SEVERITY
+      policySections:
+        - policyGroups:
+            - fieldName: Read-Only Root Filesystem
+              booleanOperator: OR
+              values:
+                - value: "false"
+      criteriaLocked: false
+      mitreVectorsLocked: false
+      isDefault: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the security policy 3 is updated 3
+  herve4m.rhacs_configuration.rhacs_policy:
+    policy: Test pol 3
+    data:
+      apiVersion: config.stackrox.io/v1alpha1
+      kind: SecurityPolicy
+      metadata:
+        name: copy-container-using-read-write-root-filesystem
+      spec:
+        policyName: Test pol 3
+        description: >
+          Alert on deployments with containers with read-write root filesystem
+        rationale: >
+          Containers running with read-write root filesystem represent greater
+          post-exploitation risk by allowing an attacker to modify important
+          files in the container.
+        remediation: >
+          Use a read-only root filesystem, and use volume mounts to allow writes
+          to specific sub-directories depending on your application's needs.
+        disabled: false
+        lifecycleStages:
+          - DEPLOY
+        # changed
+        categories:
+          - Docker CIS
+        eventSource: NOT_APPLICABLE
+        exclusions:
+          - name: Don't alert on openshift-node namespace
+            deployment:
+              scope:
+                namespace: openshift-node
+          - name: Don't alert on the kube-system namespace
+            deployment:
+              scope:
+                namespace: kube-system
+          - name: Don't alert on istio-system namespace
+            deployment:
+              scope:
+                namespace: istio-system
+          - name: Don't alert on openshift-sdn namespace
+            deployment:
+              scope:
+                namespace: openshift-sdn
+        severity: MEDIUM_SEVERITY
+        policySections:
+          - policyGroups:
+              - fieldName: Read-Only Root Filesystem
+                booleanOperator: OR
+                values:
+                  - value: "false"
+        criteriaLocked: false
+        mitreVectorsLocked: false
+        isDefault: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
 - name: Ensure the security policy 3 is renamed
   herve4m.rhacs_configuration.rhacs_policy:
     policy: Test pol 3
@@ -232,7 +355,6 @@
       lifecycleStages:
         - DEPLOY
       categories:
-        - Privileges
         - Docker CIS
       eventSource: NOT_APPLICABLE
       exclusions:
