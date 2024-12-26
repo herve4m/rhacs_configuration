@@ -30,6 +30,8 @@ options:
       - If the policy already exists, then the module does not change anything.
         The module does not reconcile the destination policy if the two
         policies differ.
+      - By default, the name of the copy is the source policy name with the
+        C( (CLONE)) suffix.
     type: str
     aliases:
       - dest

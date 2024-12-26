@@ -12,10 +12,10 @@ __metaclass__ = type
 DOCUMENTATION = r"""
 ---
 module: rhacs_signature
-short_description: Manage RHACS integrations with Cosign signatures
+short_description: Manage RHACS integration with Cosign signatures
 description:
   - Create, delete, and update Red Hat Advanced Cluster Security for Kubernetes
-    (RHACS) integrations with Cosign signatures.
+    (RHACS) integration with Cosign signatures.
 version_added: '1.0.0'
 author: Hervé Quatremain (@herve4m)
 options:

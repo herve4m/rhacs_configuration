@@ -31,11 +31,13 @@ Name | Description
 `rhacs_exception`                 | Configure vulnerability exception expiration periods
 `rhacs_external_backup`           | Manage external backup configurations
 `rhacs_group`                     | Manage roles for authentication providers
-`rhacs_image_integration`         | Manage image vulnerability scanner and registry integrations
+`rhacs_image_integration`         | Manage image vulnerability scanner and registry integration
+`rhacs_image_watch`               | Manage image watches
 `rhacs_init_bundle`               | Manage cluster init bundles
 `rhacs_machine_access`            | Manage machine access configurations
 `rhacs_notifier_integration`      | Manage notification methods
 `rhacs_permission_set`            | Manage permission sets
+`rhacs_policy`                    | Manage security policies
 `rhacs_policy_category`           | Manage policy categories
 `rhacs_policy_clone`              | Clone security policies
 `rhacs_policy_export`             | Export security policies
@@ -44,7 +46,7 @@ Name | Description
 `rhacs_policy_status`             | Enable or disable policies
 `rhacs_report_schedule`           | Manage vulnerability reporting schedules
 `rhacs_role`                      | Manage roles
-`rhacs_signature`                 | Manage RHACS integrations with Cosign signatures
+`rhacs_signature`                 | Manage RHACS integration with Cosign signatures
 
 
 ## Installing the Collection
