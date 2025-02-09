@@ -1,0 +1,7 @@
+[allowlist]
+  description = "Global Allowlist"
+
+  # Sample private key used for integration tests
+  paths = [
+    '''gcs_sa_key.json'''
+  ]

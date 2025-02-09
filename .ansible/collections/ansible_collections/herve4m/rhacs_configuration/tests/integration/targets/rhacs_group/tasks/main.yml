@@ -1,0 +1,149 @@
+---
+- name: Ensure the authentication provider exists
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible authentication provider
+    type: google
+    google:
+      audience: /projects/4242/global/backendServices/4242
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: auth
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: auth['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the group exists 1
+  herve4m.rhacs_configuration.rhacs_group:
+    auth_provider: "{{ auth['id'] }}"
+    key: default
+    role: Sensor Creator
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the group exists 2
+  herve4m.rhacs_configuration.rhacs_group:
+    auth_provider: ansible authentication provider
+    key: email
+    value: admin@example.com
+    role: Admin
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the group exists 3
+  herve4m.rhacs_configuration.rhacs_group:
+    auth_provider: ansible authentication provider
+    key: email
+    value: jdoe@example.com
+    role: Network Graph Viewer
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: ERROR EXPECTED Ensure the group exists 4
+  herve4m.rhacs_configuration.rhacs_group:
+    auth_provider: no such auth provider
+    key: email
+    value: admin@example.com
+    role: Admin
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (auth provider does not exist)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (auth provider)
+
+- name: Ensure the group 2 is updated
+  herve4m.rhacs_configuration.rhacs_group:
+    auth_provider: ansible authentication provider
+    key: email
+    value: admin@example.com
+    role: None
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the group 2 and 3 are removed
+  herve4m.rhacs_configuration.rhacs_group:
+    auth_provider: "{{ auth['id'] }}"
+    key: email
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the authentication provider is removed
+  herve4m.rhacs_configuration.rhacs_auth_provider:
+    name: ansible authentication provider
+    type: google
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: ERROR EXPECTED Ensure the group does not exist
+  herve4m.rhacs_configuration.rhacs_group:
+    auth_provider: "{{ auth['id'] }}"
+    key: default
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (auth provider id does not exist)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (auth providerid )
+...

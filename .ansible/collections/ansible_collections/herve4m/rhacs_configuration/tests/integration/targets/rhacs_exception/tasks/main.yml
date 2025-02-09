@@ -1,0 +1,204 @@
+---
+- name: Ensure the configuration is read (no change)
+  herve4m.rhacs_configuration.rhacs_exception:
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated
+  herve4m.rhacs_configuration.rhacs_exception:
+    exception_times:
+      - expiration: 15
+        enabled: false
+      - expiration: 30
+        enabled: false
+      - expiration: 60
+        enabled: false
+      - expiration: 90
+        enabled: false
+    append: false
+    fixable_cve:
+      all: false
+      any: false
+    indefinite: true
+    custom_date: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the configuration is updated (no change) 1
+  herve4m.rhacs_configuration.rhacs_exception:
+    exception_times:
+      - expiration: 90
+        enabled: false
+      - expiration: 15
+        enabled: false
+      - expiration: 60
+        enabled: false
+      - expiration: 30
+        enabled: false
+    append: false
+    fixable_cve:
+      all: false
+      any: false
+    indefinite: true
+    custom_date: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated (no change) 2
+  herve4m.rhacs_configuration.rhacs_exception:
+    exception_times:
+      - expiration: 15
+        enabled: false
+      - expiration: 30
+        enabled: false
+      - expiration: 60
+        enabled: false
+      - expiration: 90
+        enabled: false
+    append: true
+    fixable_cve:
+      all: false
+      any: false
+    indefinite: true
+    custom_date: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated (no change) 3
+  herve4m.rhacs_configuration.rhacs_exception:
+    exception_times:
+      - expiration: 30
+        enabled: false
+    append: true
+    fixable_cve:
+      all: false
+      any: false
+    indefinite: true
+    custom_date: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated (no change) 4
+  herve4m.rhacs_configuration.rhacs_exception:
+    exception_times: []
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated 2
+  herve4m.rhacs_configuration.rhacs_exception:
+    exception_times:
+      - expiration: 15
+        enabled: true
+      - expiration: 120
+        enabled: true
+      - expiration: 30
+        enabled: true
+      - expiration: 60
+        enabled: true
+    fixable_cve:
+      all: true
+      any: false
+    indefinite: false
+    custom_date: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the configuration is updated 3
+  herve4m.rhacs_configuration.rhacs_exception:
+    exception_times:
+      - expiration: 15
+        enabled: true
+      - expiration: 120
+        enabled: true
+    append: true
+    fixable_cve:
+      all: true
+      any: true
+    indefinite: false
+    custom_date: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the configuration is updated 4
+  herve4m.rhacs_configuration.rhacs_exception:
+    exception_times:
+      - expiration: 15
+        enabled: true
+      - expiration: 30
+        enabled: true
+      - expiration: 60
+        enabled: true
+      - expiration: 90
+        enabled: true
+    append: false
+    fixable_cve:
+      all: true
+      any: true
+    indefinite: false
+    custom_date: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+...

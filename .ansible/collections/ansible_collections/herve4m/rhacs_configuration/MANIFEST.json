@@ -1,0 +1,36 @@
+{
+ "collection_info": {
+  "namespace": "herve4m",
+  "name": "rhacs_configuration",
+  "version": "1.3.0",
+  "authors": [
+   "Herv\u00e9 Quatremain <herve.quatremain@redhat.com>"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "security",
+   "infrastructure",
+   "stackrox",
+   "rhacs",
+   "kubernetes"
+  ],
+  "description": "Ansible modules to configure Red Hat Advanced Cluster Security for Kubernetes (RHACS) and StackRox installations.\n",
+  "license": [
+   "GPL-3.0-or-later"
+  ],
+  "license_file": null,
+  "dependencies": {},
+  "repository": "https://github.com/herve4m/rhacs_configuration",
+  "documentation": "https://github.com/herve4m/rhacs_configuration",
+  "homepage": "https://github.com/herve4m/rhacs_configuration",
+  "issues": "https://github.com/herve4m/rhacs_configuration/issues"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "7d47f62cd66caf5c744710ee1cf9ca4c40f92e8ed3014f99a42e7e4a63c63cd5",
+  "format": 1
+ },
+ "format": 1
+}

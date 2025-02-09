@@ -1,0 +1,242 @@
+---
+- name: ERROR EXPECTED Ensure the signature integration exists
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    cosign_certs: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing options)
+
+- name: ERROR EXPECTED Ensure the signature integration exists (2)
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    cosign_pub_keys:
+      - name: key1
+        key: "{{ lookup('ansible.builtin.file', 'sign_pub_key.pem') }}"
+      - name: key2
+        key: "{{ lookup('ansible.builtin.file', 'sign_pub_key.pem') }}"
+    cosign_certs:
+      - identity: lvasquez@example.com
+        oidc_issuer: https://github.com/login/oauth
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing options)
+
+- name: Ensure the signature integration exists
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    append_keys: false
+    cosign_pub_keys:
+      - name: key1
+        key: "{{ lookup('ansible.builtin.file', 'sign_pub_key.pem') }}"
+      - name: key2
+        key: "{{ lookup('ansible.builtin.file', 'sign_pub_key.pem') }}"
+    cosign_certs:
+      - identity: lvasquez@example.com
+        oidc_issuer: https://github.com/login/oauth
+        cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the signature integration exists (no change) (1)
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    append_keys: true
+    append_certs: true
+    cosign_pub_keys:
+      - name: key1
+        key: "{{ lookup('ansible.builtin.file', 'sign_pub_key.pem') }}"
+      - name: key2
+        key: "{{ lookup('ansible.builtin.file', 'sign_pub_key.pem') }}"
+    cosign_certs:
+      - identity: lvasquez@example.com
+        oidc_issuer: https://github.com/login/oauth
+        cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the signature integration exists (no change) (2)
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the signature integration exists (no change) (3)
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    append_keys: true
+    append_certs: true
+    cosign_pub_keys:
+      - name: key2
+        key: "{{ lookup('ansible.builtin.file', 'sign_pub_key.pem') }}"
+    cosign_certs: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the signature integration exists (no change) (4)
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    cosign_pub_keys: []
+    cosign_certs:
+      - identity: lvasquez@example.com
+        oidc_issuer: https://github.com/login/oauth
+        cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the signature integration is updated
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    append_keys: false
+    append_certs: false
+    cosign_pub_keys:
+      - name: key1
+        key: "{{ lookup('ansible.builtin.file', 'sign_pub_key.pem') }}"
+    cosign_certs: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the signature integration is updated (2)
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    append_keys: true
+    append_certs: true
+    cosign_pub_keys:
+      - name: key2
+        key: "{{ lookup('ansible.builtin.file', 'sign_pub_key.pem') }}"
+    cosign_certs:
+      - identity: lvasquez@example.com
+        oidc_issuer: https://github.com/login/oauth
+        cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the signature integration is updated (3)
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    append_keys: true
+    append_certs: true
+    cosign_pub_keys:
+      - name: key2
+        key: "{{ lookup('ansible.builtin.file', 'sign_pub_key.pem') }}"
+    cosign_certs:
+      - identity: lvasquez@example.com
+        oidc_issuer: https://github.com/login/oauth
+        cert_chain: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the signature integration is removed
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    append_keys: false
+    append_certs: false
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the signature integration is removed (no change)
+  herve4m.rhacs_configuration.rhacs_signature:
+    name: sig1
+    append_keys: false
+    append_certs: false
+    cosign_pub_keys:
+      - name: key2
+        key: "{{ lookup('ansible.builtin.file', 'sign_pub_key.pem') }}"
+    cosign_certs:
+      - identity: lvasquez@example.com
+        oidc_issuer: https://github.com/login/oauth
+        cert: "{{ lookup('ansible.builtin.file', 'sign_cert.pem') }}"
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+...

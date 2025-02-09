@@ -1,0 +1,606 @@
+---
+- name: Ensure the collection is created
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 1
+    description: Deployments that handle financial information
+    rules:
+      deployments:
+        name_matchings:
+          - match_type: REGEX
+            value: ".*-cc$"
+          - match_type: EXACT
+            value: credit-cards
+      namespaces:
+        label_matchings:
+          - or_values:
+              - "app=cc"
+              - "app=financial"
+          - or_values:
+              - "env=production"
+      clusters:
+        name_matchings:
+          - match_type: EXACT
+            value: production
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: collection1
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: collection1['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Display the ID
+  ansible.builtin.debug:
+    var: collection1
+
+- name: Ensure the collection is updated (no change) 1
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 1
+    description: Deployments that handle financial information
+    rules:
+      namespaces:
+        label_matchings:
+          - or_values:
+              - "app=financial"
+              - "app=cc"
+          - or_values:
+              - "env=production"
+      deployments:
+        name_matchings:
+          - match_type: EXACT
+            value: credit-cards
+          - match_type: REGEX
+            value: ".*-cc$"
+      clusters:
+        name_matchings:
+          - match_type: EXACT
+            value: production
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Display the ID
+  ansible.builtin.debug:
+    var: result
+
+- name: Ensure the collection is updated (no change) 2
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 1
+    new_name: Collection 1
+    description: Deployments that handle financial information
+    rules:
+      namespaces:
+        label_matchings:
+          - or_values:
+              - "app=financial"
+              - "app=cc"
+          - or_values:
+              - "env=production"
+      deployments:
+        name_matchings:
+          - match_type: EXACT
+            value: credit-cards
+          - match_type: REGEX
+            value: ".*-cc$"
+      clusters:
+        name_matchings:
+          - match_type: EXACT
+            value: production
+    attached_collections: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the collection is updated (no change) 3
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: does not exist
+    new_name: Collection 1
+    description: Deployments that handle financial information
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the collection is created 2
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 2
+    description: Deployments that handle personal user data
+    rules:
+      deployments: {}
+      namespaces: {}
+      clusters:
+        name_matchings:
+          - match_type: EXACT
+            value: production
+    attached_collections:
+      - Collection 1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the collection 2 is updated (no change) 1
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 2
+    description: Deployments that handle personal user data
+    attached_collections:
+      - "{{ collection1['id'] }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the collection 2 is updated (no change) 2
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 2
+    description: Deployments that handle personal user data
+    attached_collections: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: ERROR EXPECTED Ensure the collection 2 is renamed
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 2
+    new_name: Collection 1
+    description: Deployments that handle personal user data
+    attached_collections:
+      - "{{ collection1['id'] }}"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (existing destination collection)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (existing collection)
+
+- name: ERROR EXPECTED Ensure the collection 4 is created 1
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 4
+    description: My collection 4
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (rules and attached_collections)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing parameters)
+
+- name: ERROR EXPECTED Ensure the collection 4 is created 2
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 4
+    description: My collection 4
+    attached_collections: []
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (rules and attached_collections)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing parameters)
+
+- name: Ensure the collection 4 is created
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 4
+    description: My collection 4
+    rules:
+      deployments: {}
+      namespaces: {}
+      clusters:
+        name_matchings:
+          - match_type: EXACT
+            value: production
+    attached_collections:
+      - Collection 2
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: ERROR EXPECTED Ensure the collection 2 requires collection 4
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 2
+    description: Deployments that handle personal user data
+    attached_collections:
+      - Collection 4
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (collection dependency loop)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (dependency loop)
+
+- name: ERROR EXPECTED Ensure the collection 2 is removed
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 2
+    description: My collection 2
+    attached_collections: []
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (dependency)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (dependency)
+
+# Rename
+- name: Ensure the collection 2 is renamed/updated
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 2
+    new_name: Collection 3
+    description: Deployments that handle personal user data 2
+    attached_collections: []
+    append_collections: false
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the collection 2 is removed (no change)
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 2
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# Update
+- name: Ensure the collection 1 is updated 1
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 1
+    rules:
+      deployments:
+        name_matchings:
+          - match_type: REGEX
+            value: ".*-cc$"
+          - match_type: EXACT
+            value: credit-cards
+      namespaces:
+        label_matchings:
+          - or_values:
+              - "app=cc"
+              - "app=financial"
+          - or_values:
+              - "env=production"
+      clusters:
+        name_matchings:
+          - match_type: EXACT
+            value: production
+          # Adding a rule
+          - match_type: EXACT
+            value: development
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: collection1
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: collection1['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the collection 1 is updated 2
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 1
+    # Overriding all the rules
+    rules:
+      deployments: {}
+      namespaces:
+        label_matchings: []
+      clusters:
+        name_matchings:
+          - match_type: EXACT
+            value: production
+          - match_type: EXACT
+            value: quality
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: collection1
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: collection1['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the collection 1 is updated 3
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 1
+    rules:
+      deployments: {}
+      namespaces:
+        label_matchings: []
+      clusters:
+        name_matchings:
+          - match_type: EXACT
+            value: production
+          # Changing a rule
+          - match_type: REGEX
+            value: "^.*-quality1$"
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: collection1
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: collection1['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: ERROR EXPECTED Ensure the collection 1 is updated 4
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 1
+    # Removing all the rules
+    rules:
+      deployments: {}
+      namespaces: {}
+      clusters: {}
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (no rules and no attached collections)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (no rules/collections)
+
+- name: ERROR EXPECTED Ensure the collection 1 is updated 5
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 1
+    # Removing all the rules
+    rules:
+      deployments: {}
+      namespaces: {}
+      clusters: {}
+    attached_collections:
+      - Collection 1
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (same collection)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (same collection)
+
+- name: Ensure the collection 1 is updated 6
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 1
+    # Removing all the rules
+    rules:
+      deployments: {}
+      namespaces: {}
+      clusters: {}
+    attached_collections:
+      - Collection 3
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: collection1['changed']
+    fail_msg: The preceding task should have changed something
+
+
+# Loops
+- name: Ensure the collection is created 11
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 11
+    rules:
+      deployments: {}
+      namespaces: {}
+      clusters:
+        name_matchings:
+          - match_type: EXACT
+            value: production
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the collection is created 13
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 13
+    rules:
+      deployments: {}
+      namespaces: {}
+      clusters:
+        name_matchings:
+          - match_type: EXACT
+            value: production
+    attached_collections:
+      - Collection 11
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the collection is created 12
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 12
+    rules:
+      deployments: {}
+      namespaces: {}
+      clusters:
+        name_matchings:
+          - match_type: EXACT
+            value: production
+    attached_collections:
+      - Collection 3
+      - Collection 13
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: ERROR EXPECTED Ensure the collection 11 is updated 5
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 11
+    attached_collections:
+      - Collection 12
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (loop detected)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (loop detected)
+
+# Remove
+- name: Ensure the collection 1 is removed
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 1
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the collection 1 is removed (no change)
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: Collection 1
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the collections are removed
+  herve4m.rhacs_configuration.rhacs_collection:
+    name: "{{ item }}"
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  loop:
+    - Collection 12
+    - Collection 13
+    - Collection 11
+    - Collection 4
+    - Collection 3
+...

@@ -1,0 +1,64 @@
+---
+name: Integration Test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create a Kind cluster
+        run: kind create cluster --wait 5m
+
+      - name: Install Stackrox
+        # yamllint disable rule:line-length
+        run: |
+          set -x
+          helm repo add stackrox https://raw.githubusercontent.com/stackrox/helm-charts/main/opensource/
+          helm upgrade --install -n stackrox --create-namespace stackrox-central-services stackrox/stackrox-central-services --set central.adminPassword.value=redhat123 --set central.persistence.none=true --set central.telemetry.enabled=false
+          helm upgrade -n stackrox stackrox-central-services stackrox/stackrox-central-services --set central.resources.requests.memory=100Mi --set central.resources.requests.cpu=100m --set central.resources.limits.memory=4Gi --set central.resources.limits.cpu=1 --set central.db.resources.requests.memory=100Mi --set central.db.resources.requests.cpu=100m --set central.db.resources.limits.memory=4Gi --set central.db.resources.limits.cpu=1 --set scanner.autoscaling.disable=true --set scanner.replicas=1 --set scanner.resources.requests.memory=100Mi --set scanner.resources.requests.cpu=100m --set scanner.resources.limits.memory=2500Mi --set scanner.resources.limits.cpu=2000m
+          kubectl get deployment central -n stackrox -o json | jq '(.spec.template.spec.volumes[] | select(.name=="stackrox-db"))={"name": "stackrox-db", "emptyDir": {}}' | kubectl apply -f -
+          sleep 120
+          kubectl wait -n stackrox --for condition=Available=True deployment/central --timeout 360s
+          kubectl -n stackrox port-forward svc/central 8443:443 &> /dev/null &
+        # yamllint enable rule:line-length
+
+      - uses: actions/checkout@v4
+        with:
+          path: ansible_collections/herve4m/rhacs_configuration
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install required packages
+        run: pip install -Iv ansible
+
+      - uses: ifaxity/wait-on-action@v1
+        with:
+          resource: https://localhost:8443
+          log: true
+          interval: 5000
+          timeout: 300000
+
+      - name: Run integration test
+        run: >
+          ansible-test integration -v --color --continue-on-error --diff
+          --requirements --coverage
+        working-directory: ./ansible_collections/herve4m/rhacs_configuration
+
+      - name: Generate coverage report
+        run: >
+          ansible-test coverage xml -v --requirements --group-by command
+          --group-by version
+        working-directory: ./ansible_collections/herve4m/rhacs_configuration
+
+      # See the reports at https://codecov.io/gh/herve4m/rhacs_configuration
+      - uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+...

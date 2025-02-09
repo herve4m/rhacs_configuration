@@ -1,0 +1,191 @@
+---
+- name: Ensure the configuration is read (no change)
+  herve4m.rhacs_configuration.rhacs_delegated_image_scan:
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated
+  herve4m.rhacs_configuration.rhacs_delegated_image_scan:
+    enabled_for: SPECIFIC
+    default_cluster: ""
+    registries:
+      - path: reg.example.com
+        cluster: ""
+      - path: reg1.example.com
+        cluster: ""
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the configuration is updated (no change) 1
+  herve4m.rhacs_configuration.rhacs_delegated_image_scan:
+    enabled_for: SPECIFIC
+    default_cluster: ""
+    registries:
+      - path: reg1.example.com
+        cluster: ""
+      - path: reg.example.com
+        cluster: ""
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated (no change) 2
+  herve4m.rhacs_configuration.rhacs_delegated_image_scan:
+    registries:
+      - path: reg.example.com
+        cluster: ""
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the configuration is updated (no change) 3
+  herve4m.rhacs_configuration.rhacs_delegated_image_scan:
+    registries: []
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# Errors
+- name: ERROR EXPECTED Ensure the configuration is updated 1
+  herve4m.rhacs_configuration.rhacs_delegated_image_scan:
+    enabled_for: SPECIFIC
+    default_cluster: foobar
+    registries:
+      - path: reg.example.com
+        cluster: ""
+      - path: reg1.example.com
+        cluster: ""
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (non-existing cluster name/id)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (cluster name/id)
+
+- name: ERROR EXPECTED Ensure the configuration is updated 2
+  herve4m.rhacs_configuration.rhacs_delegated_image_scan:
+    enabled_for: SPECIFIC
+    default_cluster: ""
+    registries:
+      - path: reg.example.com
+        cluster: ""
+      - path: reg1.example.com
+        cluster: foobar
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (non-existing cluster name/id)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (cluster name/id)
+
+# Updates
+- name: Ensure the configuration is updated 1
+  herve4m.rhacs_configuration.rhacs_delegated_image_scan:
+    enabled_for: ALL
+    default_cluster: ""
+    registries: []
+    append: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the configuration is updated 2
+  herve4m.rhacs_configuration.rhacs_delegated_image_scan:
+    enabled_for: ALL
+    default_cluster: ""
+    registries:
+      - path: reg.example.com
+        cluster: ""
+    append: false
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the configuration is updated 3
+  herve4m.rhacs_configuration.rhacs_delegated_image_scan:
+    enabled_for: ALL
+    default_cluster: ""
+    registries:
+      - path: reg1.example.com
+        cluster: ""
+    append: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the configuration is updated 4
+  herve4m.rhacs_configuration.rhacs_delegated_image_scan:
+    enabled_for: NONE
+    default_cluster: ""
+    registries:
+      - path: reg1.example.com
+        cluster: ""
+    append: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+...

@@ -1,0 +1,147 @@
+---
+- name: ERROR EXPECTED Ensure the Paladin Cloud integration exists
+  herve4m.rhacs_configuration.rhacs_cloud_management_platform:
+    name: paladin_conf
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (missing api_token)
+
+- name: Ensure the Paladin Cloud integration exists
+  herve4m.rhacs_configuration.rhacs_cloud_management_platform:
+    name: paladin_conf
+    api_token: aabbccddeeff
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Paladin Cloud integration exists (no change) (1)
+  herve4m.rhacs_configuration.rhacs_cloud_management_platform:
+    name: paladin_conf
+    type: PALADIN
+    endpoint_url: https://api.paladincloud.io
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Paladin Cloud integration exists (no change) (2)
+  herve4m.rhacs_configuration.rhacs_cloud_management_platform:
+    name: paladin_conf
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Paladin Cloud integration does not exist
+  herve4m.rhacs_configuration.rhacs_cloud_management_platform:
+    name: paladin_conf
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Paladin Cloud integration does not exist (no change)
+  herve4m.rhacs_configuration.rhacs_cloud_management_platform:
+    name: paladin_conf
+    type: PALADIN
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the Red Hat OpenShift Cluster Manager integration exists
+  herve4m.rhacs_configuration.rhacs_cloud_management_platform:
+    name: OCM_integration
+    type: OCM
+    api_token: aabbccddeeff
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the Red Hat OpenShift Cluster Manager integration is updated
+  herve4m.rhacs_configuration.rhacs_cloud_management_platform:
+    name: OCM_integration
+    api_token: wwxxyyzz
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Move the Red Hat OpenShift Cluster Manager integration to Paladin
+  herve4m.rhacs_configuration.rhacs_cloud_management_platform:
+    name: OCM_integration
+    type: PALADIN
+    api_token: ppqqrrsstt
+    state: present
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+
+- name: Ensure the new Paladin cloud integration does not exist
+  herve4m.rhacs_configuration.rhacs_cloud_management_platform:
+    name: OCM_integration
+    state: absent
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task changes something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have changed something
+...

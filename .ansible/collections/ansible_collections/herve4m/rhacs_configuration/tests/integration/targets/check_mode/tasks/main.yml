@@ -1,0 +1,183 @@
+---
+# Check mode on object creation
+- name: Ensure the OS Tools policy category exists (check mode)
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: OS Tools
+    state: present
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    skip_validate_certs: true
+  check_mode: true
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have created the policy category
+
+- name: Ensure the OS Tools policy category exists
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: OS Tools
+    state: present
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    skip_validate_certs: true
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have created the policy category
+
+# Check mode on object update (no change)
+- name: Ensure the OS Tools policy category exists (check mode) (no change)
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: OS Tools
+    state: present
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    skip_validate_certs: true
+  check_mode: true
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+- name: Ensure the OS Tools policy category exists (check mode) (no change)
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: OS Tools
+    state: present
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    skip_validate_certs: true
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
+
+# Check mode on object update (with change)
+- name: Ensure the OS Tools policy category is updated (check mode)
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: OS Tools
+    new_name: System Tools
+    state: present
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    skip_validate_certs: true
+  check_mode: true
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have updated the policy category
+
+- name: Ensure the OS Tools policy category is updated
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: OS Tools
+    new_name: System Tools
+    state: present
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    skip_validate_certs: true
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have updated the policy category
+
+# Check mode on object deletion
+- name: Ensure the OS Tools policy category is deleted (check mode)
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: System Tools
+    state: absent
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    skip_validate_certs: true
+  check_mode: true
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have deleted the policy category
+
+- name: Ensure the OS Tools policy category is deleted
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: System Tools
+    state: absent
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+    skip_validate_certs: true
+  register: result
+
+- name: Ensure that the task did change something
+  ansible.builtin.assert:
+    that: result['changed']
+    fail_msg: The preceding task should have deleted the policy category
+
+# Expected errors
+- name: ERROR EXPECTED Ensure the policy category is deleted (host)
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: System Tools
+    state: absent
+    rhacs_host: http://doesnotexists.local
+    rhacs_token: "{{ rhacs_token }}"
+    skip_validate_certs: true
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (host does not exist)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (host does not exist)
+
+- name: ERROR EXPECTED Ensure the policy category is deleted (cannot connect)
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: System Tools
+    state: absent
+    rhacs_host: https://locahost:12345
+    rhacs_token: "{{ rhacs_token }}"
+    skip_validate_certs: true
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (cannot connect to the API)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (cannot connect)
+
+- name: ERROR EXPECTED Ensure the policy category is deleted (SSL validation)
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: System Tools
+    state: absent
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (SSL validation)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (SSL validation)
+
+- name: ERROR EXPECTED Ensure the policy category is deleted (credentials)
+  herve4m.rhacs_configuration.rhacs_policy_category:
+    name: System Tools
+    state: absent
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "AABBCCDDEEFFGGHH"
+    skip_validate_certs: true
+  ignore_errors: true
+  register: result
+
+- name: Ensure that the task failed (wrong credentials)
+  ansible.builtin.assert:
+    that: result['failed']
+    fail_msg: The preceding task should have failed (wrong credentials)
+...
