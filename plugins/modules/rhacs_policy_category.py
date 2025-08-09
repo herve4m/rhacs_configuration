@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright: (c) 2024 Hervé Quatremain <herve.quatremain@redhat.com>
+# Copyright: (c) 2024, 2025 Hervé Quatremain <herve.quatremain@redhat.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
@@ -19,7 +19,9 @@ version_added: '1.0.0'
 author: Hervé Quatremain (@herve4m)
 options:
   name:
-    description: Name of the policy category.
+    description:
+      - Name of the policy category.
+      - The name is case insensitive.
     required: true
     type: str
   new_name:
@@ -144,8 +146,10 @@ def main():
     categories = c.get("categories", [])
 
     # Retrieve the objects for the given names
-    config = module.get_item_from_resource_list(name, categories)
-    new_config = module.get_item_from_resource_list(new_name, categories)
+    config = module.get_item_from_resource_list(name, categories, case_sensitive=False)
+    new_config = module.get_item_from_resource_list(
+        new_name, categories, case_sensitive=False
+    )
 
     # Remove the object. For delete operations, the new_name parameter is
     # ignored.

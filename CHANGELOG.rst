@@ -4,6 +4,19 @@ Red Hat Advanced Cluster Security for Kubernetes Collection Release Notes
 
 .. contents:: Topics
 
+v1.4.0
+======
+
+Release Summary
+---------------
+
+Adding the ``include`` dictionary option to the ``rhacs_report_schedule`` module.
+
+Minor Changes
+-------------
+
+- Add the ``include.nvd_cvss``, ``include.epss_probability``, and ``include.advisory`` options to the ``herve4m.rhacs_configuration.rhacs_report_schedule`` module.
+
 v1.3.0
 ======
 
