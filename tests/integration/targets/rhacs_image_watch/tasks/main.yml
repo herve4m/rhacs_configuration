@@ -13,10 +13,6 @@
     that: result['changed']
     fail_msg: The preceding task should have changed something
 
-- name: Pause for 10 seconds
-  ansible.builtin.pause:
-    seconds: 10
-
 - name: Ensure the image watch exists (no change)
   herve4m.rhacs_configuration.rhacs_image_watch:
     image: quay.io/quay/busybox:latest
