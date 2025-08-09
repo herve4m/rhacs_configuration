@@ -424,6 +424,9 @@
       - CRITICAL
     image_types:
       - DEPLOYED
+    include:
+      nvd_cvss: true
+      advisory: false
     collection: "{{ collection['id'] }}"
     since: DATE
     date: "2024-05-25"
@@ -461,6 +464,8 @@
       - IMPORTANT
     image_types:
       - DEPLOYED
+    include:
+      advisory: false
     collection: "{{ collection['id'] }}"
     since: DATE
     date: "2024-05-25"
@@ -508,6 +513,7 @@
     week_days:
       - Saturday
       - Sunday
+    include: {}
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
     rhacs_token: "{{ rhacs_token }}"
@@ -523,6 +529,8 @@
     name: Weekly report 1
     since: DATE
     interval: WEEKLY
+    include:
+      epss_probability: false
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
     rhacs_token: "{{ rhacs_token }}"
@@ -545,6 +553,8 @@
       - MODERATE
     image_types:
       - WATCHED
+    include:
+      epss_probability: true
     collection: Collection 100
     since: ALL_TIME
     date: "2024-06-01"
@@ -677,6 +687,8 @@
       - 15
     hour: 14
     minute: 30
+    include:
+      nvd_cvss: false
     email_notifiers:
       - notifier: ansible email conf 200
     skip_validate_certs: true
@@ -743,6 +755,8 @@
       - CRITICAL
     image_types:
       - DEPLOYED
+    include:
+      nvd_cvss: true
     collection: "{{ collection['id'] }}"
     since: DATE
     date: "2024-05-25"

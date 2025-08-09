@@ -1,4 +1,4 @@
-# Copyright: (c) 2024 Hervé Quatremain <herve.quatremain@redhat.com>
+# Copyright: (c) 2024, 2025 Hervé Quatremain <herve.quatremain@redhat.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
@@ -717,7 +717,9 @@ class APIModule(AnsibleModule):
 
         return response.get("json", {})
 
-    def get_item_from_resource_list(self, name_or_id, resource_list, name_attribute="name"):
+    def get_item_from_resource_list(
+        self, name_or_id, resource_list, name_attribute="name", case_sensitive=True
+    ):
         """Retrieve an RHACS object from a list or objects.
 
         :param name_or_id: Name or ID of the object to retrieve.
@@ -734,8 +736,14 @@ class APIModule(AnsibleModule):
         """
         if not name_or_id or not resource_list:
             return None
+        if not case_sensitive:
+            name_or_id = name_or_id.lower()
         for res in resource_list:
-            if name_or_id == res.get(name_attribute) or name_or_id == res.get("id"):
+            if case_sensitive:
+                resource_name = res.get(name_attribute)
+            else:
+                resource_name = res.get(name_attribute, "").lower()
+            if name_or_id == resource_name or name_or_id == res.get("id"):
                 return res
         return None
 

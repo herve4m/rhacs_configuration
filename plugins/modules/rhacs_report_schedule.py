@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright: (c) 2024 Hervé Quatremain <herve.quatremain@redhat.com>
+# Copyright: (c) 2024, 2025 Hervé Quatremain <herve.quatremain@redhat.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
@@ -70,6 +70,27 @@ options:
     choices:
       - DEPLOYED
       - WATCHED
+  include:
+    description: Columns to include in the report.
+    type: dict
+    suboptions:
+      nvd_cvss:
+        description:
+          - Whether to include the NVD CVSS column in the report configuration.
+          - V(false) by default.
+        type: bool
+      epss_probability:
+        description:
+          - Whether to include the EPSS probability column in the report
+            configuration.
+          - V(false) by default.
+        type: bool
+      advisory:
+        description:
+          - Whether to include the advisory name and link column in the report
+            configuration.
+          - V(false) by default.
+        type: bool
   since:
     description:
       - Include CVEs based on their discovery date.
@@ -229,6 +250,9 @@ EXAMPLES = r"""
     image_types:
       - DEPLOYED
       - WATCHED
+    include:
+      nvd_cvss: true
+      epss_probability: false
     collection: Sensitive data
     since: DATE
     date: "2024-05-25"
@@ -309,6 +333,14 @@ def main():
             choices=["UNKNOWN", "LOW", "MODERATE", "IMPORTANT", "CRITICAL"],
         ),
         image_types=dict(type="list", elements="str", choices=["DEPLOYED", "WATCHED"]),
+        include=dict(
+            type="dict",
+            options=dict(
+                nvd_cvss=dict(type="bool"),
+                epss_probability=dict(type="bool"),
+                advisory=dict(type="bool"),
+            ),
+        ),
         since=dict(choices=["ALL_TIME", "LAST_SENT", "DATE"]),
         date=dict(),
         collection=dict(),
@@ -344,6 +376,7 @@ def main():
     fixability = module.params.get("fixability")
     severities = module.params.get("severities")
     image_types = module.params.get("image_types")
+    include = module.params.get("include")
     since = module.params.get("since")
     date = module.params.get("date")
     collection = module.params.get("collection")
@@ -378,6 +411,9 @@ def main():
     #                     "DEPLOYED",
     #                     "WATCHED"
     #                 ],
+    #                 "includeNvdCvss": true,
+    #                 "includeEpssProbability": false,
+    #                 "includeAdvisory": true
     #                 "sinceStartDate": "2024-10-16T00:00:00Z"
     #             },
     #             "schedule": {
@@ -619,6 +655,17 @@ def main():
             },
             "notifiers": notifiers,
         }
+
+        if include:
+            if include.get("nvd_cvss") is not None:
+                new_fields["vulnReportFilters"]["includeNvdCvss"] = include.get("nvd_cvss")
+            if include.get("epss_probability") is not None:
+                new_fields["vulnReportFilters"]["includeEpssProbability"] = include.get(
+                    "epss_probability"
+                )
+            if include.get("advisory") is not None:
+                new_fields["vulnReportFilters"]["includeAdvisory"] = include.get("advisory")
+
         if since == "ALL_TIME":
             new_fields["vulnReportFilters"]["allVuln"] = True
         elif since == "LAST_SENT":
@@ -699,6 +746,19 @@ def main():
             changes += 1
         if image_types and req_image_types != curr_image_types:
             changes += 1
+        if include:
+            if include.get("nvd_cvss") is not None and include.get(
+                "nvd_cvss"
+            ) != vuln_report.get("includeNvdCvss"):
+                changes += 1
+            if include.get("epss_probability") is not None and include.get(
+                "epss_probability"
+            ) != vuln_report.get("includeEpssProbability"):
+                changes += 1
+            if include.get("advisory") is not None and include.get(
+                "advisory"
+            ) != vuln_report.get("includeAdvisory"):
+                changes += 1
         if since == "ALL_TIME" and vuln_report.get("allVuln", False) is False:
             changes += 1
         if (
@@ -757,6 +817,15 @@ def main():
         new_fields["vulnReportFilters"]["severities"] = list(req_severities)
     if image_types:
         new_fields["vulnReportFilters"]["imageTypes"] = list(req_image_types)
+    if include:
+        if include.get("nvd_cvss") is not None:
+            new_fields["vulnReportFilters"]["includeNvdCvss"] = include.get("nvd_cvss")
+        if include.get("epss_probability") is not None:
+            new_fields["vulnReportFilters"]["includeEpssProbability"] = include.get(
+                "epss_probability"
+            )
+        if include.get("advisory") is not None:
+            new_fields["vulnReportFilters"]["includeAdvisory"] = include.get("advisory")
     if since == "ALL_TIME":
         new_fields["vulnReportFilters"].pop("sinceLastSentScheduledReport", None)
         new_fields["vulnReportFilters"].pop("sinceStartDate", None)
