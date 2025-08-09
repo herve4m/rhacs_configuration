@@ -125,3 +125,13 @@ releases:
         name: rhacs_policy
         namespace: ''
     release_date: '2024-12-26'
+  1.4.0:
+    changes:
+      minor_changes:
+        - Add the ``include.nvd_cvss``, ``include.epss_probability``, and ``include.advisory``
+          options to the ``herve4m.rhacs_configuration.rhacs_report_schedule`` module.
+      release_summary: Adding the ``include`` dictionary option to the ``rhacs_report_schedule``
+        module.
+    fragments:
+      - 23-v1.4.0-summary.yml
+    release_date: '2025-08-09'
