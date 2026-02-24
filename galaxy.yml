@@ -1,7 +1,7 @@
 ---
 namespace: herve4m
 name: rhacs_configuration
-version: 1.4.0
+version: 1.4.1
 readme: README.md
 authors:
   - Hervé Quatremain <herve.quatremain@redhat.com>

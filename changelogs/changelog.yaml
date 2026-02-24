@@ -135,3 +135,13 @@ releases:
     fragments:
       - 23-v1.4.0-summary.yml
     release_date: '2025-08-09'
+  1.4.1:
+    changes:
+      minor_changes:
+        - Change the deprecated ``ansible.module_utils._text`` module to the ``ansible.module_utils.common.text.converters``
+          module for the ``to_bytes`` and ``to_text`` functions.
+        - Fix link checker issue with the www.gnu.org link.
+      release_summary: Fix deprecated Python modules and fix a link checker issue
+    fragments:
+      - 38-v1.4.1-summary.yml
+    release_date: '2026-02-24'
