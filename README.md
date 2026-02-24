@@ -200,4 +200,5 @@ See the [changelog](https://github.com/herve4m/rhacs_configuration/blob/main/CHA
 
 GNU General Public License v3.0 or later.
 
+<!-- markdown-link-check-disable-next-line -->
 See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.txt) to read the full text.
