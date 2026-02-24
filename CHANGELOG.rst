@@ -4,20 +4,6 @@ Red Hat Advanced Cluster Security for Kubernetes Collection Release Notes
 
 .. contents:: Topics
 
-v1.4.1
-======
-
-Release Summary
----------------
-
-Fix deprecated Python modules and fix a link checker issue
-
-Minor Changes
--------------
-
-- Change the deprecated ``ansible.module_utils._text`` module to the ``ansible.module_utils.common.text.converters`` module for the ``to_bytes`` and ``to_text`` functions.
-- Fix link checker issue with the www.gnu.org link.
-
 v1.4.0
 ======
 

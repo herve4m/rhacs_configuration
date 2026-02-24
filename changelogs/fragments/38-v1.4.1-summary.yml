@@ -1,0 +1,6 @@
+---
+release_summary: Fix deprecated Python modules and fix a link checker issue
+minor_changes:
+  - Change the deprecated ``ansible.module_utils._text`` module to the ``ansible.module_utils.common.text.converters`` module for the ``to_bytes`` and ``to_text`` functions.
+  - Fix link checker issue with the www.gnu.org link.
+...
