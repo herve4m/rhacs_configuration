@@ -19,7 +19,7 @@ author: Hervé Quatremain (@herve4m)
 options:
   data:
     description:
-      - Previously exported security polices to import.
+      - Previously exported security policies to import.
       - You can use the P(ansible.builtin.file#lookup) lookup plugin
         to read a file from the system.
       - See the M(herve4m.rhacs_configuration.rhacs_policy_export) module to

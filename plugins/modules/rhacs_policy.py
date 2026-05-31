@@ -20,7 +20,7 @@ options:
   policy:
     description:
       - Name or identifier of the security policy to manage.
-      - The policy name defined in the O(data) parameter overwites the name
+      - The policy name defined in the O(data) parameter overwrites the name
         that you define with the O(policy) parameter.
     required: true
     type: str
