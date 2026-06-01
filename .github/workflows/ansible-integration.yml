@@ -57,7 +57,7 @@ jobs:
         working-directory: ./ansible_collections/herve4m/rhacs_configuration
 
       # See the reports at https://codecov.io/gh/herve4m/rhacs_configuration
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v6
         with:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
