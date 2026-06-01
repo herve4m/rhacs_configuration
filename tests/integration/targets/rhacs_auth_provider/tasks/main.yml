@@ -114,6 +114,7 @@
     skip_validate_certs: true
     rhacs_host: "{{ rhacs_host }}"
     rhacs_token: "{{ rhacs_token }}"
+    timeout: 40
   register: result
 
 - name: Ensure that the task did change something

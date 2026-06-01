@@ -52,6 +52,7 @@ class APIModule(AnsibleModule):
             fallback=(env_fallback, ["ROX_ADMIN_PASSWORD", "ROX_PASSWORD"]),
         ),
         rhacs_token=dict(no_log=True, fallback=(env_fallback, ["ROX_API_TOKEN"])),
+        timeout=dict(type="float", default=30.0, fallback=(env_fallback, ["ROX_TIMEOUT"])),
     )
 
     MUTUALLY_EXCLUSIVE = [
@@ -147,7 +148,7 @@ class APIModule(AnsibleModule):
         self.session = Request(
             validate_certs=not self.params.get("skip_validate_certs"),
             headers=headers,
-            timeout=30,
+            timeout=self.params.get("timeout"),
         )
 
     def build_url(self, endpoint, query_params=None):

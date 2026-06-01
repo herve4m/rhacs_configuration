@@ -179,7 +179,7 @@ extends_documentation_fragment:
 """
 
 EXAMPLES = r"""
-- name: Ensure the access scope for accessing the frontent application exists
+- name: Ensure the access scope for accessing the frontend application exists
   herve4m.rhacs_configuration.rhacs_access_scope:
     name: Allow frontend
     description: Access to the frontend namespaces in the production cluster

@@ -1,6 +1,7 @@
 # Red Hat Advanced Cluster Security for Kubernetes (RHACS) Collection for Ansible
 
-[![Sanity Test](https://github.com/herve4m/rhacs_configuration/actions/workflows/pre-commit-sanity.yml/badge.svg)](https://github.com/herve4m/rhacs_configuration/actions/workflows/pre-commit-sanity.yml)
+[![Sanity Test](https://github.com/herve4m/rhacs_configuration/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/herve4m/rhacs_configuration/actions/workflows/pre-commit.yml)
+[![Partner Certification Test](https://github.com/herve4m/rhacs_configuration/actions/workflows/certification.yml/badge.svg)](https://github.com/herve4m/rhacs_configuration/actions/workflows/certification.yml)
 [![Integration Test](https://github.com/herve4m/rhacs_configuration/actions/workflows/ansible-integration.yml/badge.svg)](https://github.com/herve4m/rhacs_configuration/actions/workflows/ansible-integration.yml)
 
 
