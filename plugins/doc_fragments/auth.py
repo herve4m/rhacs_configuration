@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright: (c) 2024 Hervé Quatremain <herve.quatremain@redhat.com>
+# Copyright: (c) 2024, 2026 Hervé Quatremain <herve.quatremain@redhat.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -61,4 +61,11 @@ options:
         E(ROX_API_TOKEN) environment variable.
       - Mutually exclusive with O(rhacs_username) and O(rhacs_password).
     type: str
+  timeout:
+    description:
+      - Number of seconds to wait for the API to send data before giving up.
+      - If you do not set the parameter, then the module tries the
+        E(ROX_TIMEOUT) environment variable.
+    type: float
+    default: 30.0
 """

@@ -26,11 +26,11 @@ jobs:
           kubectl -n stackrox port-forward svc/central 8443:443 &> /dev/null &
         # yamllint enable rule:line-length
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           path: ansible_collections/herve4m/rhacs_configuration
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
