@@ -26,7 +26,7 @@ jobs:
           kubectl -n stackrox port-forward svc/central 8443:443 &> /dev/null &
         # yamllint enable rule:line-length
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           path: ansible_collections/herve4m/rhacs_configuration
 
