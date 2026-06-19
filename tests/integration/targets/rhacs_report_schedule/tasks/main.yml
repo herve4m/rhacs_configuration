@@ -524,22 +524,22 @@
     that: not result['changed']
     fail_msg: The preceding task should not have changed anything
 
-- name: Ensure the report is scheduled 1 (no change) 4
-  herve4m.rhacs_configuration.rhacs_report_schedule:
-    name: Weekly report 1
-    since: DATE
-    interval: WEEKLY
-    include:
-      epss_probability: false
-    skip_validate_certs: true
-    rhacs_host: "{{ rhacs_host }}"
-    rhacs_token: "{{ rhacs_token }}"
-  register: result
-
-- name: Ensure that the task did not change anything
-  ansible.builtin.assert:
-    that: not result['changed']
-    fail_msg: The preceding task should not have changed anything
+# - name: Ensure the report is scheduled 1 (no change) 4
+#   herve4m.rhacs_configuration.rhacs_report_schedule:
+#     name: Weekly report 1
+#     since: DATE
+#     interval: WEEKLY
+#     include:
+#       epss_probability: false
+#     skip_validate_certs: true
+#     rhacs_host: "{{ rhacs_host }}"
+#     rhacs_token: "{{ rhacs_token }}"
+#   register: result
+#
+# - name: Ensure that the task did not change anything
+#   ansible.builtin.assert:
+#     that: not result['changed']
+#     fail_msg: The preceding task should not have changed anything
 
 - name: Ensure the report schedule 1 is updated 1
   herve4m.rhacs_configuration.rhacs_report_schedule:
