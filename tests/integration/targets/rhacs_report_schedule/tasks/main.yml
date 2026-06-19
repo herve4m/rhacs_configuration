@@ -486,7 +486,7 @@
 #     rhacs_host: "{{ rhacs_host }}"
 #     rhacs_token: "{{ rhacs_token }}"
 #   register: result
-
+#
 # - name: Ensure that the task did not change anything
 #   ansible.builtin.assert:
 #     that: not result['changed']
