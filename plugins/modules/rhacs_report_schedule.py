@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright: (c) 2024, 2025 Hervé Quatremain <herve.quatremain@redhat.com>
+# Copyright: (c) 2024-2026 Hervé Quatremain <herve.quatremain@redhat.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
@@ -77,19 +77,25 @@ options:
       nvd_cvss:
         description:
           - Whether to include the NVD CVSS column in the report configuration.
-          - V(false) by default.
+          - V(true) by default since StackRox and RHACS 4.11.
+          - The O(include.nvd_cvss) parameter is deprecated.
+            StackRox and RHACS 4.11 and later force the parameter to V(true).
         type: bool
       epss_probability:
         description:
           - Whether to include the EPSS probability column in the report
             configuration.
-          - V(false) by default.
+          - V(true) by default since StackRox and RHACS 4.11.
+          - The O(include.epss_probability) parameter is deprecated.
+            StackRox and RHACS 4.11 and later force the parameter to V(true).
         type: bool
       advisory:
         description:
           - Whether to include the advisory name and link column in the report
             configuration.
-          - V(false) by default.
+          - V(true) by default since StackRox and RHACS 4.11.
+          - The O(include.advisory) parameter is deprecated.
+            StackRox and RHACS 4.11 and later force the parameter to V(true).
         type: bool
   since:
     description:
@@ -302,7 +308,15 @@ import copy
 
 from ..module_utils.api_module import APIModule
 
-WEEK_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+WEEK_DAYS = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+]
 
 
 def severity_to_API_type(severity):

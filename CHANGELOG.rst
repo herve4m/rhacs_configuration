@@ -4,6 +4,19 @@ Red Hat Advanced Cluster Security for Kubernetes Collection Release Notes
 
 .. contents:: Topics
 
+v1.4.2
+======
+
+Release Summary
+---------------
+
+Deprecate some options in the ``rhacs_report_schedule`` module.
+
+Minor Changes
+-------------
+
+- The ``include.nvd_cvss``, ``include.epss_probability``, and ``include.advisory`` parameters are deprecated because StackRox and RHACS 4.11 and later force the parameters to ``true``.
+
 v1.4.1
 ======
 
