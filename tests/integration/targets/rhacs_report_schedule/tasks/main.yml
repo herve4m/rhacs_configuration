@@ -452,45 +452,45 @@
     that: result['changed']
     fail_msg: The preceding task should have changed something
 
-# - name: Ensure the report is scheduled 1 (no change) 1
-#   herve4m.rhacs_configuration.rhacs_report_schedule:
-#     name: Weekly report 1
-#     new_name: Weekly report 1
-#     description: Weekly report
-#     fixability: FIXABLE
-#     severities:
-#       - CRITICAL
-#       - CRITICAL
-#       - IMPORTANT
-#     image_types:
-#       - DEPLOYED
-#     include:
-#       advisory: false
-#     collection: "{{ collection['id'] }}"
-#     since: DATE
-#     date: "2024-05-25"
-#     interval: WEEKLY
-#     week_days:
-#       - Sunday
-#       - Saturday
-#       - Sunday
-#     hour: 2
-#     minute: 42
-#     email_notifiers:
-#       - notifier: ansible email conf 200
-#         to:
-#           - security@example.com
-#           - secteam@example.com
-#         subject: RHACS report report
-#     skip_validate_certs: true
-#     rhacs_host: "{{ rhacs_host }}"
-#     rhacs_token: "{{ rhacs_token }}"
-#   register: result
-#
-# - name: Ensure that the task did not change anything
-#   ansible.builtin.assert:
-#     that: not result['changed']
-#     fail_msg: The preceding task should not have changed anything
+- name: Ensure the report is scheduled 1 (no change) 1
+  herve4m.rhacs_configuration.rhacs_report_schedule:
+    name: Weekly report 1
+    new_name: Weekly report 1
+    description: Weekly report
+    fixability: FIXABLE
+    severities:
+      - CRITICAL
+      - CRITICAL
+      - IMPORTANT
+    image_types:
+      - DEPLOYED
+    include:
+      advisory: true
+    collection: "{{ collection['id'] }}"
+    since: DATE
+    date: "2024-05-25"
+    interval: WEEKLY
+    week_days:
+      - Sunday
+      - Saturday
+      - Sunday
+    hour: 2
+    minute: 42
+    email_notifiers:
+      - notifier: ansible email conf 200
+        to:
+          - security@example.com
+          - secteam@example.com
+        subject: RHACS report report
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
 
 - name: Ensure the report is scheduled 1 (no change) 2
   herve4m.rhacs_configuration.rhacs_report_schedule:
@@ -524,22 +524,22 @@
     that: not result['changed']
     fail_msg: The preceding task should not have changed anything
 
-# - name: Ensure the report is scheduled 1 (no change) 4
-#   herve4m.rhacs_configuration.rhacs_report_schedule:
-#     name: Weekly report 1
-#     since: DATE
-#     interval: WEEKLY
-#     include:
-#       epss_probability: false
-#     skip_validate_certs: true
-#     rhacs_host: "{{ rhacs_host }}"
-#     rhacs_token: "{{ rhacs_token }}"
-#   register: result
-#
-# - name: Ensure that the task did not change anything
-#   ansible.builtin.assert:
-#     that: not result['changed']
-#     fail_msg: The preceding task should not have changed anything
+- name: Ensure the report is scheduled 1 (no change) 4
+  herve4m.rhacs_configuration.rhacs_report_schedule:
+    name: Weekly report 1
+    since: DATE
+    interval: WEEKLY
+    include:
+      epss_probability: true
+    skip_validate_certs: true
+    rhacs_host: "{{ rhacs_host }}"
+    rhacs_token: "{{ rhacs_token }}"
+  register: result
+
+- name: Ensure that the task did not change anything
+  ansible.builtin.assert:
+    that: not result['changed']
+    fail_msg: The preceding task should not have changed anything
 
 - name: Ensure the report schedule 1 is updated 1
   herve4m.rhacs_configuration.rhacs_report_schedule:
@@ -688,7 +688,7 @@
     hour: 14
     minute: 30
     include:
-      nvd_cvss: false
+      nvd_cvss: true
     email_notifiers:
       - notifier: ansible email conf 200
     skip_validate_certs: true
