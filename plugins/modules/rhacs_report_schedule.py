@@ -78,7 +78,7 @@ options:
         description:
           - Whether to include the NVD CVSS column in the report configuration.
           - V(true) by default since StackRox and RHACS 4.11.
-          - The O(nvd_cvss) parameter is deprecated.
+          - The O(include.nvd_cvss) parameter is deprecated.
             StackRox and RHACS 4.11 and later force the parameter to V(true).
         type: bool
       epss_probability:
@@ -86,7 +86,7 @@ options:
           - Whether to include the EPSS probability column in the report
             configuration.
           - V(true) by default since StackRox and RHACS 4.11.
-          - The O(epss_probability) parameter is deprecated.
+          - The O(include.epss_probability) parameter is deprecated.
             StackRox and RHACS 4.11 and later force the parameter to V(true).
         type: bool
       advisory:
@@ -94,7 +94,7 @@ options:
           - Whether to include the advisory name and link column in the report
             configuration.
           - V(true) by default since StackRox and RHACS 4.11.
-          - The O(advisory) parameter is deprecated.
+          - The O(include.advisory) parameter is deprecated.
             StackRox and RHACS 4.11 and later force the parameter to V(true).
         type: bool
   since:
