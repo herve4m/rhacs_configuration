@@ -1,3 +1,23 @@
+> [!IMPORTANT]
+>
+> **We've moved!**
+>
+> This repository is no longer used and has been archived for historical purposes.
+>
+> You can find the latest code at https://github.com/redhat-cop/infra.rhacs_configuration, where we continue to develop and maintain the collection.
+>
+> We also renamed the collection in the new repository, from `herve4m.rhacs_configuration` to `infra.rhacs_configuration`
+> The modules have not changed: they retain their names and parameters.
+> For example, the old `herve4m.rhacs_configuration.rhacs_policy_category` module is now available as `infra.rhacs_configuration.rhacs_policy_category`
+>
+> * Issues can be filed against our new repository at https://github.com/redhat-cop/infra.rhacs_configuration/issues
+> * The collection is available from Ansible Galaxy at https://galaxy.ansible.com/ui/repo/published/infra/rhacs_configuration/
+> * You can install the new collection on your system by running the following command:
+>
+> ```bash
+> ansible-galaxy collection install infra.rhacs_configuration
+> ```
+
 # Red Hat Advanced Cluster Security for Kubernetes (RHACS) Collection for Ansible
 
 [![Sanity Test](https://github.com/herve4m/rhacs_configuration/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/herve4m/rhacs_configuration/actions/workflows/pre-commit.yml)
